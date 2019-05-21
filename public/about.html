@@ -3,54 +3,53 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self';">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-	<link rel="icon" type="image/png" href="images/duck.png">
- 
-	<title>About Kubetoy</title>
+    <link rel="stylesheet" href="css/subdomain.css">
+    <link rel="icon" type="image/png" href="images/favicon.ico">
+
+    <title>About OpenShift Dedicated Demo</title>
 </head>
 <body>
 
-<div class="container">
-	
-	<h1>About Kubetoy 1.8.1</h1>
-	
-	<p>
-		This application is a simple Node.js application that is expected to run in a
-		container deployed by kubernetes.  It was created to help explore IBM Cloud Private
-		by allowing the user to write messages to the log, crash the application, and even
-		reate and view files in a shared file system.
-	</p>
-	
-	<p>
-		This latest version removes the previous Stress page, in order to faciliate a move to
-		multiarch container (amd64, ppc64le, x390s).
-	</p>
-	
-	<p>
-		This app uses Bootstrap 4.  All the files have been copied locally to this
-		application so Internet connectivity is not required and can work in 
-		an air-gapped system.
-	</p>
-	
-	<p>
-		The app was written by jim conallen (jconallen@us.ibm.com) and is made available under
-		the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache 2.0 license</a>.  If you 
-		find any bugs, create an issue on the 
-		<a href="https://github.com/IBM-ICP-CoC/KubeToy/issues">GitHub site</a>, and we'll do what 
-		we can to fix.
-	</p>
-	
-	<p><a href="home">home</a></p>
+<div class="container" style="max-width: 900px;">
+
+    <h1>About OpenShift Dedicated Demo 1.0.0</h1>
+
+    <p>
+        This application is a simple Node.js application that is expected to run in a
+        container deployed by OpenShift.  It was created to help explore OpenShift Dedicated
+        by allowing the user to write messages to the log, crash the application, and even
+        create and view files in a shared file system.
+    </p>
+
+    <p>
+        This project build's on a similar project by IBM, <a href="https://github.com/IBM-ICP-CoC/KubeToy">KubeToy</a>.
+    </p>
+
+    <p>
+        This app uses Bootstrap 4 and some custom styling. All the files have been copied locally to this
+        application so Internet connectivity is not required and can work in an air-gapped system.
+    </p>
+
+    <p>
+        The app was written by Jim Conallen &lt;jconallen@us.ibm.com&gt; and updated with custom OpenShift
+        functionality by Will Gordon &lt;wgordon@redhat.com&gt;. The app is made available under the
+        <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache 2.0 license</a>. If you find any bugs, create an
+        issue on the <a href="https://github.com/openshift-cs/openshift-dedicated-demo/issues">GitHub site</a>, and
+        we'll do what we can to address them.
+    </p>
+
+    <p><a href="home">&lt; Home</a></p>
 
 </div>
 
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="js/jquery-3.3.1.min.js"></script>
-    <script src="js/popper.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="js/jquery-3.3.1.min.js"></script>
+<script src="js/popper.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+
 </body>
 </html>

@@ -3,80 +3,80 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self';">
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="css/bootstrap.min.css">
-    <script defer src="js/fontawesome-all.js"></script>
-	<link rel="icon" type="image/png" href="images/duck.png">
+    <link rel="stylesheet" href="css/subdomain.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" type="image/png" href="images/favicon.ico">
 
-	<title>Kubetoy</title>
+    <title>OpenShift Dedicated Demo</title>
 </head>
 <body>
 
 <div class="container">
 
-	<div class="jumbotron">
-		<div class="container">
-		  <div class="row">
-		    <div class="col-1">
-	  			<img src="images/<%=duckImage %>"/>
-		    </div>
-		    <div class="col-11">
-	  			<h1 class="display-4">Kubetoy</h1>
-		    </div>
-		  </div>
-		</div>
-	  <p class="lead">A kubernetes toy application to explore kuberenetes deployments.</p>
-	  <p><%=version %></p>
-	  <hr class="my-4">
-	  <p>Currently being served up by pod: <%=pod%> <br/>
-	  <%=sysInfoStr%> </p>
-	</div>
-	
-<p><a href="home">home</a> | 
-<% if( filesystem ) { %><a href="files">filesystem</a> | <% } %>
-<a href="config">config maps and secrets</a> | <% if( objectstore ) { %><a href="cos">Cloud Object Storage</a> | <% } %> <a href="network">network</a> | <a href="about.html">about</a></p>
-<hr/>
+    <div class="jumbotron p-4 mb-5 mt-2">
+        <div class="container">
+            <div class="row mb-4">
+                <div class="col-2 ml-auto">
+                    <img src="images/<%=logo %>"/>
+                </div>
+                <div class="col-3 mr-auto">
+                    <h1 class="display-4 my-0">Demo</h1>
+                </div>
+            </div>
+        </div>
+        <p>A toy application to explore OpenShift deployments.<br>Version: <%=version %></p>
+        <hr class="my-2">
+        <p>Currently being served up by pod: <%=pod%><br><%=sysInfoStr%></p>
+    </div>
 
-<div class="row">
-	<div class="col-sm">
-			<form class="form-inline" method="GET" action="logit">
-				<input type="text" class="form-control mb-2 mr-sm-2" name="msg" placeholder="Message for stdout">
-					<div class="input-group-prepend">
-						<button type="submit" class="btn btn-primary mb-2">Log It!</button>			  
-					</div>
-			</form>
-			<form class="form-inline" method="GET" action="errit">
-				<input type="text" class="form-control mb-2 mr-sm-2" name="msg" placeholder="Message for stderr">
-					<div class="input-group-prepend">
-						<button type="submit" class="btn btn-danger mb-2">Err It!</button>
-					</div>
-			</form>
-			<form class="form-inline" method="POST" action="crash">
-				<input type="text" class="form-control mb-2 mr-sm-2" name="msg" placeholder="Crash message">
-						<div class="input-group-prepend">
-							<button type="submit" class="btn btn-primary mb-2">Crash Me!</button>
-						</div>
-			</form>
-		</div>
-	<div class="col-sm">
-		<form class="form-inline" method="POST" action="health">
-				<p><%= healthStatus %></p> &nbsp; <button type="submit" id="health" class="btn btn-primary mb-2">Toggle Health</button>
-		</form>
-		<form class="form-inline" method="GET" action="mutate">
-			<button type="submit" class="btn btn-success mb-2">Mutate</button>
-	</form>
+    <p class="text-center">
+        <%- include('nav.ejs', {page: 'home'}); %>
+    </p>
 
-	</div>
+    <hr>
+
+    <div class="row">
+        <div class="col-sm">
+            <form class="form-inline" method="GET" action="logit">
+                <input type="text" class="form-control mb-2 mr-sm-2" name="msg" placeholder="Message for stdout">
+                <div class="input-group-prepend">
+                    <button type="submit" class="btn btn-primary mb-2">Log It!</button>
+                </div>
+            </form>
+            <form class="form-inline" method="GET" action="errit">
+                <input type="text" class="form-control mb-2 mr-sm-2" name="msg" placeholder="Message for stderr">
+                <div class="input-group-prepend">
+                    <button type="submit" class="btn btn-danger mb-2">Err It!</button>
+                </div>
+            </form>
+            <form class="form-inline" method="POST" action="crash">
+                <input type="text" class="form-control mb-2 mr-sm-2" name="msg" placeholder="Crash message">
+                <div class="input-group-prepend">
+                    <button type="submit" class="btn btn-primary mb-2">Crash Me!</button>
+                </div>
+            </form>
+        </div>
+        <div class="col-sm">
+            <form class="form-inline" method="POST" action="health">
+                <p><%= healthStatus %></p> &nbsp; <button type="submit" id="health" class="btn btn-primary mb-2">Toggle Health</button>
+            </form>
+            <form class="form-inline" method="GET" action="mutate">
+                <button type="submit" class="btn btn-success mb-2">Mutate</button>
+            </form>
+
+        </div>
+    </div>
+
 </div>
 
-</div>
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="js/jquery-3.3.1.min.js"></script>
+<script src="js/popper.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
 
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="js/jquery-3.3.1.min.js"></script>
-    <script src="js/popper.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    
 </body>
 </html>

@@ -17,10 +17,11 @@
 <h1>Network</h1>
 <h6>Pod: <%= pod %></h6>
 
-<p><a href="home">home</a> | 
-<% if( filesystem ) { %><a href="files">filesystem</a> | <% } %>
-<a href="config">config maps and secrets</a> | <% if( objectstore ) { %><a href="cos">Cloud Object Storage</a> | <% } %> <a href="network">network</a> | <a href="about.html">about</a></p>
-<hr/>
+	<p class="text-center">
+		<%- include('nav.ejs', {page: 'network'}); %>
+	</p>
+
+	<hr>
 
 	<ul class="nav nav-tabs" role="tablist">
 		<li class="nav-item"><a class="nav-link <%= dnsActive %>" data-toggle="tab" href="#dns">DNS</a></li>

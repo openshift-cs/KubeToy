@@ -15,10 +15,11 @@
 
 
 <p>pod: <%=pod%> </p>
-<p><a href="home">home</a> | 
-<% if( filesystem ) { %><a href="files">filesystem</a> | <% } %>
-<a href="config">config maps and secrets</a> | <% if( objectstore ) { %><a href="cos">Cloud Object Storage</a> | <% } %> <a href="network">network</a> | <a href="about.html">about</a></p>
-<hr/>
+    <p class="text-center">
+        <%- include('nav.ejs', {page: 'home'}); %>
+    </p>
+
+    <hr>
 
 <div class="card">
   <div class="card-body">

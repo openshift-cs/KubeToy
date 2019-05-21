@@ -17,10 +17,11 @@
 <h1>Filesystem</h1>
 <h6>Pod: <%= pod %></h6>
 
-<p><a href="home">home</a> | 
-<% if( filesystem ) { %><a href="files">filesystem</a> | <% } %>
-<a href="config">config maps and secrets</a> | <% if( objectstore ) { %><a href="cos">Cloud Object Storage</a> | <% } %> <a href="network">network</a> | <a href="about.html">about</a></p>
-<hr/>
+	<p class="text-center">
+		<%- include('nav.ejs', {page: 'filesystem'}); %>
+	</p>
+
+	<hr>
 
 	<form method="POST" action="files">
 	  <div class="form-group">

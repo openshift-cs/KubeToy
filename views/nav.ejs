@@ -1,0 +1,5 @@
+<% if( page == 'home') { %><span class="text-uppercase font-weight-bold">Home</span><% } else { %><a href="/home">Home</a><% } %> |
+<% if( filesystem ) { %><% if( page == 'filesystem') { %><span class="text-uppercase font-weight-bold">Filesystem</span><% } else { %><a href="/files">Filesystem</a><% } %> |<% } %>
+<% if( page == 'config') { %><span class="text-uppercase font-weight-bold">Config Maps and Secrets</span><% } else { %><a href="/config">Config Maps and Secrets</a><% } %> |
+<% if( page == 'network') { %><span class="text-uppercase font-weight-bold">Network</span><% } else { %><a href="/network">Network</a><% } %> |
+<a href="/about.html">About</a>

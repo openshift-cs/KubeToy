@@ -1,20 +1,29 @@
 {
-	"name": "kubetoy",
-	"version": "1.8.2",
-	"private": true,
+	"name": "openshift-dedicated-demo",
+	"version": "1.0.0",
+	"description": "",
+	"keywords": [],
+	"homepage": "https://github.com/openshift-cs/openshift-dedicated-demo",
+	"bugs": "https://github.com/openshift-cs/openshift-dedicated-demo/issues",
+	"license": "Apache-2.0",
+	"author": "OpenShift Team <community@openshift.com>",
+	"contributors": [
+		"Will Gordon <wgordon@redhat.com>"
+	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/openshift-cs/openshift-dedicated-demo.git"
+	},
 	"scripts": {
 		"start": "node app.js"
 	},
 	"dependencies": {
-		"body-parser": "1.18.x",
-		"ejs": "^2.5.x",
-		"express": "^4.x",
-		"formidable": "^1.2.1",
-		"ibm-cos-sdk": "^1.4.4",
-		"net-ping": "^1.2.x",
-		"node-uname": "2.0.x",
-		"sprintf-js": "*",
-		"valid-filename": "*"
+		"body-parser": "^1.19.0",
+		"ejs": "^2.6.1",
+		"express": "^4.17.0",
+		"net-ping": "^1.2.3",
+		"node-uname": "^2.0.0",
+		"valid-filename": "^3.1.0"
 	},
-	"repository": {}
+	"private": true
 }

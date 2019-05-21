@@ -1,3 +1,0 @@
-This is just a simple toy application for exploring Kubernetes.  
-
-See [IBM-ICP-COC/Kubetoy](https://github.com/IBM-ICP-CoC/KubeToy) github project for more information on this app.
