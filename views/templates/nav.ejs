@@ -1,0 +1,79 @@
+<nav class="navbar navbar-pf-vertical"><!-- navbar -->
+    <div class="navbar-header">
+        <% if (locals.disableSidenav === undefined || !disableSidenav) { %>
+        <button type="button" class="navbar-toggle">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        <% } %>
+        <a href="/home" class="navbar-brand" style="padding: 5px;">
+            <img class="navbar-brand-name openshift-logo" src="/images/OpenShiftDedicated.png" alt="OpenShift Dedicated logo"/>
+        </a>
+    </div>
+
+    <nav class="collapse navbar-collapse">
+        <ul class="nav navbar-right text-white text-left mr-1 version-nav small">
+            <li class="clearfix"><span class="pull-left">App Version:</span><span class="pull-right"><%= appVersion %></span></li>
+            <li class="clearfix"><span class="pull-left">Pod Name:</span><span class="pull-right"><%= pod %></span></li>
+            <li class="clearfix"><span class="pull-left">System:</span><span class="pull-right"><%= sysInfoStr %></span></li>
+        </ul>
+    </nav>
+</nav> <!-- /navbar -->
+
+<% if (locals.disableSidenav === undefined || !disableSidenav) { %>
+<div class="nav-pf-vertical nav-pf-vertical-with-sub-menus hide-nav-pf"><!-- sidenav -->
+    <ul class="list-group">
+        <li class="list-group-item<% if (locals.page !== undefined && page == 'home') { %> active<% } %>">
+            <a href="/home">
+                <span class="pficon pficon-home" data-toggle="tooltip" title="Home"></span>
+                <span class="list-group-item-value">Home</span>
+            </a>
+        </li>
+        <% if (locals.hasFilesystem !== undefined && hasFilesystem) { %>
+        <li class="list-group-item<% if (locals.page !== undefined && page == 'filesystem') { %> active<% } %>">
+            <a href="/filesystem">
+                <span class="pficon pficon-folder-open" data-toggle="tooltip" title="Persistent Storage"></span>
+                <span class="list-group-item-value">Persistent Storage</span>
+            </a>
+        </li>
+        <% } %>
+        <% if (locals.hasConfigMap !== undefined && hasConfigMap) { %>
+            <li class="list-group-item<% if (locals.page !== undefined && page == 'configmaps') { %> active<% } %>">
+                <a href="/configmaps">
+                    <span class="fa fa-cogs" data-toggle="tooltip" title="Config Maps"></span>
+                    <span class="list-group-item-value">Config Maps</span>
+                </a>
+            </li>
+        <% } %>
+        <% if (locals.hasSecret !== undefined && hasSecret) { %>
+        <li class="list-group-item<% if (locals.page !== undefined && page == 'secrets') { %> active<% } %>">
+            <a href="/secrets">
+                <span class="pficon pficon-locked" data-toggle="tooltip" title="Secrets"></span>
+                <span class="list-group-item-value">Secrets</span>
+            </a>
+        </li>
+        <% } %>
+        <li class="list-group-item<% if (locals.page !== undefined && page == 'env-variables') { %> active<% } %>">
+            <a href="/env-variables">
+                <span class="fa fa-terminal" data-toggle="tooltip" title="ENV Variables"></span>
+                <span class="list-group-item-value">ENV Variables</span>
+            </a>
+        </li>
+        <li class="list-group-item<% if (locals.page !== undefined && page == 'network') { %> active<% } %>">
+            <a href="/network">
+                <span class="pficon pficon-network" data-toggle="tooltip" title="Networking"></span>
+                <span class="list-group-item-value">Networking</span>
+            </a>
+
+        </li>
+        <li class="list-group-item<% if (locals.page !== undefined && page == 'about') { %> active<% } %>">
+            <a href="/about">
+                <span class="pficon pficon-info" data-toggle="tooltip" title="About"></span>
+                <span class="list-group-item-value">About</span>
+            </a>
+        </li>
+    </ul>
+</div><!-- /sidenav -->
+<% } %>

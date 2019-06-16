@@ -1,0 +1,24 @@
+{
+	"name": "openshift-dedicated-demo-microservice",
+	"version": "1.0.0",
+	"description": "",
+	"keywords": [],
+	"homepage": "https://github.com/openshift-cs/openshift-dedicated-demo",
+	"bugs": "https://github.com/openshift-cs/openshift-dedicated-demo/issues",
+	"license": "Apache-2.0",
+	"author": "OpenShift Team <community@openshift.com>",
+	"contributors": [
+		"Will Gordon <wgordon@redhat.com>"
+	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/openshift-cs/openshift-dedicated-demo.git"
+	},
+	"scripts": {
+		"start": "node app.js"
+	},
+	"dependencies": {
+		"express": "^4.17.0"
+	},
+	"private": true
+}

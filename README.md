@@ -32,3 +32,7 @@ Intentionally crash the application and watch it self heal.
 * Remove references to IBM Private Cloud
 * Include OpenShift specific styles and logos
 * Remove unused packages and misc clean up
+* Redesigned with [PatternFly](https://www.patternfly.org/)
+* Rearchitected in a cleaner format
+* Include intra-cluster communication from Networking page
+  * Adds a separate `microservice` sub-deployment

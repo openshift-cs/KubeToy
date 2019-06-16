@@ -1,41 +1,19 @@
-<html>
-<head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<%- include('templates/header.ejs'); %>
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-	<link rel="icon" type="image/png" href="images/duck.png">
+<%- include('templates/nav.ejs'); %>
 
-	<title>Kubetoy Error</title>
-</head>
-<body>
-<div class="container">
-
-
-<p>pod: <%=pod%> </p>
-    <p class="text-center">
-        <%- include('nav.ejs', {page: 'home'}); %>
-    </p>
-
-    <hr>
-
-<div class="card">
-  <div class="card-body">
-    <h5 class="card-title">Error</h5>
-	<pre><%=msg%></pre>
-  </div>
+<div class="blank-slate-pf container-pf-nav-pf-vertical">
+    <div class="blank-slate-pf-icon">
+        <span class="pficon pficon-error-circle-o"></span>
+    </div>
+    <h1>
+        Error Encountered!
+    </h1>
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2 text-left">
+            <pre><%= locals.msg %></pre>
+        </div>
+    </div>
 </div>
 
-
-
-</div>
-
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="js/jquery-3.3.1.min.js"></script>
-    <script src="js/popper.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-</body>
-</html>
+<%- include('templates/footer.ejs'); %>

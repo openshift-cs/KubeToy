@@ -1,0 +1,17 @@
+<%- include('templates/header.ejs'); %>
+
+<%- include('templates/nav.ejs'); %>
+
+<div class="blank-slate-pf container-pf-nav-pf-vertical file-output">
+    <h1>
+        <a href="/filesystem" class="pull-left small"><span class="fa fa-angle-left"></span> Back</a>
+        <%= locals.filename %>
+    </h1>
+    <div class="row">
+        <div class="col-xs-8 col-xs-offset-2 text-left">
+            <pre><%= locals.file %></pre>
+        </div>
+    </div>
+</div>
+
+<%- include('templates/footer.ejs'); %>

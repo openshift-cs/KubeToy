@@ -1,372 +1,381 @@
+/*
+  SETUP CONSTANTS
+ */
 const express = require('express');
 const bodyParser = require('body-parser');
 const validFilename = require('valid-filename');
+const path = require('path');
 const fs = require('fs');
 const ping = require('net-ping');
-const { exec } = require('child_process');
+const http = require('http');
 const dns = require('dns');
 const { uname } = require('node-uname');
 const sysInfo = uname();
-const sysInfoStr = `Arch: ${sysInfo.machine}, Release: ${sysInfo.release}`;
-const appVersion = "1.0.0";
+const sysInfoStr = `${sysInfo.machine} - ${sysInfo.release}`;
+const appVersion = '1.0.0';
 
-const configFile = "/var/config/config.json";
-const secretFile = "/var/secret/demo-secret.txt";
 
+/*
+  CONFIGURE APPLICATION
+ */
 let app = express();
 app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({
-    extended: true
+  extended: true
 }));
 
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
-
-
-let pod = "xxxxx";
-if( process.env.HOSTNAME ) {
-    let hostname = process.env.HOSTNAME;
-    index = hostname.lastIndexOf('-');
-    pod = hostname.substring(index+1);
-}
-
-
-let healthy = true;
-let mutated = false;
-let logo = "OpenShiftDedicated.svg";
-
-function healthStatus(){
-    if( healthy ) {
-        return "I'm feeling OK.";
-    } else {
-        return "I'm not feeling all that well.";
-    }
-}
-
-let directory = '/var/test';
-let filesystem = fs.existsSync(directory);
-
 app.set('port', process.env.PORT || 8080);
 
-if( filesystem ) {
-    app.get('/files', function(req,res){
-        fs.readdir(directory, function(err, items) {
-            if( err ) {
-                let pretty = JSON.stringify(err,null,4);
-                console.error(pretty);
-                res.render('error', { "pod": pod, "filesystem": filesystem, "msg": pretty });
-            } else {
-                if( !items ) {
-                    items = [];
-                }
-                res.render('files', { "pod": pod, "items": items, "filesystem": filesystem, "directory": directory });
-            }
-        });
-    });
 
-    app.get('/show', function(req,res){
-        let index = req.query.f;
-        fs.readdir(directory, function(err, items) {
-            if( index<items.length ) {
-                res.sendFile( '/var/test/' + items[index] );
-            } else {
-                res.redirect('files');
-            }
-        });
-    });
-
-    app.post('/files', function(req,res){
-        let filename = req.body.filename;
-        if( validFilename( filename ) ){
-            let content = req.body.content;
-            console.log( 'creating file: ' + filename );
-
-            fs.writeFile(directory + '/' + filename, content, 'utf8', function (err) {
-                if (err) {
-                    let pretty = JSON.stringify(err,null,4);
-                    console.error(pretty);
-                    res.render('error', { "pod": pod, "filesystem": filesystem, "msg": pretty });
-                } else{
-                    res.redirect('files');
-                }
-            });
-        } else {
-            let pretty ='Invalid filename: "' + filename + '"';
-            console.error(pretty);
-            res.render('error', { "pod": pod, "filesystem": filesystem, "msg": pretty });
-        }
-    });
-}
+/*
+  CONFIGURE MICROSERVICE
+ */
+let service = process.env.MICROSERVICE_NAME;
+let serviceIP = process.env.MICROSERVICE_IP || process.env[service + '_SERVICE_HOST'];
+let servicePort = process.env.MICROSERVICE_PORT || process.env[service + '_SERVICE_PORT'] || 8080;
 
 
-app.get('/mutate', function(req,res){
-    console.log("mutating");
-    exec('echo "#\!/bin/bash\npwd" > ./mutate.sh');
-    exec('chmod +x ./mutate.sh');
-    exec('top &');
-    if (mutated) {
-        logo = "OpenShiftDedicated.svg";
-    } else {
-        logo = "OpenShiftDedicatedRed.svg";
-    }
-    mutated = !mutated;
-    res.redirect('home');
+/*
+  SET GLOBAL VARIABLES
+ */
+// File paths
+let configFile = process.env.CONFIG_FILE || '/var/config/config.json';
+let secretFile = process.env.SECRET_FILE || '/var/secret/secret.txt';
+let directory = process.env.PERSISTENT_DIRECTORY || '/var/demo_files';
+
+if (!path.isAbsolute(configFile)) { configFile = path.resolve(__dirname, configFile); }
+if (!path.isAbsolute(secretFile)) { secretFile = path.resolve(__dirname, secretFile); }
+if (!path.isAbsolute(directory)) { directory = path.resolve(__dirname, directory); }
+
+// Pod name
+let pod = process.env.HOSTNAME || 'Unknown pod';
+
+// Booleans
+let healthy = true;
+let hasFilesystem = fs.existsSync(directory);
+let hasSecret = fs.existsSync(secretFile);
+let hasConfigMap = fs.existsSync(configFile);
+
+
+/*
+  SETUP COMMON, SHARED VARIABLES
+ */
+app.locals.pod = pod;
+app.locals.sysInfoStr = sysInfoStr;
+app.locals.appVersion = appVersion;
+app.locals.hasFilesystem = hasFilesystem;
+app.locals.hasSecret = hasSecret;
+app.locals.hasConfigMap = hasConfigMap;
+
+
+/*
+  DEBUGGING URLS
+ */
+app.get('/rip', function(request, response) {
+  console.log('Rendering /rip for debugging');
+  response.render('rip');
+});
+
+app.get('/error', function(request, response) {
+  console.log('Rendering /error for debugging');
+  response.render('error');
 });
 
 
-app.post('/dns', function(req,res){
-    let host = req.body.dnsHost;
+/*
+  HOME URLS/FUNCTIONS
+ */
+app.get('/', function(request, response) {
+  console.log('Redirecting to /home');
+  response.redirect('home');
+});
 
-    if( !host ) {
-        let message = "Please provide a host name or IP";
-        let args = {
-            "pod": pod,
-            "filesystem": filesystem,
-            "pingResponse": "",
-            "pingHost": "",
-            "pingActive": "",
-            "dnsResponse": message,
-            "dnsHost": host,
-            "dnsActive": "active"
-        };
+app.get('/home', function(request, response) {
+  console.log('Rendering /home');
+  let status = healthStatus();
+  response.render('home', {'healthStatus': status});
+});
 
-        res.render('network', args);
-    } else {
-        // ping options
-        let options = {
-            networkProtocol: ping.NetworkProtocol.IPv4,
-            packetSize: 16,
-            retries: 1,
-            timeout: 2000,
-            ttl: 128
-        };
+app.get('/health', function(request, response) {
+  if( healthy ) {
+    console.log('Responding to /health endpoint healthy');
+    response.status(200);
+  } else {
+    console.log('Responding to /health endpoint not healthy');
+    response.status(500);
+  }
+  let status = healthStatus();
+  response.send(status);
+});
 
-        dns.resolve4(host, function(err,addresses){
-            if( err ) {
-                let args = {
-                    "pod": pod,
-                    "filesystem": filesystem,
-                    "pingResponse": "",
-                    "pingHost": "",
-                    "pingActive": "",
-                    "dnsResponse": err,
-                    "dnsHost": host,
-                    "dnsActive": "active"
-                };
+app.post('/health', function(request, response) {
+  healthy = !healthy;
+  console.log('Updating pod, ' + pod + ', health: ' + healthStatus());
+  response.redirect('/home');
+});
 
-                res.render('network', args);
-            } else {
-                console.log( addresses );
-                let addrList = '';
-                for(let i=0;i<addresses.length;i++){
-                    if( i>1 ) {
-                        addrList += '\n'+addresses[i];
+app.post('/log-stdout', function(request, response) {
+  let msg = request.body.message || 'No message';
+  console.log('stdout: ' + msg);
+  response.redirect('/home');
+});
+
+app.post('/log-stderr', function(request, response) {
+  let msg = request.body.message || 'No message';
+  console.error('stderr: ' + msg);
+  response.redirect('/home');
+});
+
+app.post('/crash', function(request, response) {
+  let msg = request.body.message || 'No message';
+  console.error('pod, ' + pod + ', crashing: ' + msg);
+
+  // set up timer to crash after 2 seconds
+  setTimeout( function() {
+    process.nextTick(function() {
+      throw new Error;
+    });
+  }, 2000 );
+
+  // in the meantime render crash page
+  response.render('rip', {'msg': msg});
+});
+
+function healthStatus() {
+  if (healthy) {
+    return "I'm feeling OK.";
+  } else {
+    return "I'm not feeling all that well.";
+  }
+}
+
+
+/*
+  FILESYSTEM URLS/FUNCTIONS
+ */
+if (hasFilesystem) {
+  app.get('/filesystem', function(request, response) {
+    fs.readdir(directory, function(err, items) {
+      if (err) {
+        console.error('error with persistent volume: ' + err);
+        response.render('error', {'msg': JSON.stringify(err,null,4)});
+      } else {
+        if (!items) { items = []; }
+        let index = request.query.filenameIndex;
+        if (index !== undefined) {
+          if (index < items.length) {
+            fs.lstat(path.resolve(directory, items[index]), function(err, stats) {
+              if (err) {
+                console.error('error with persistent file: ' + items[index]);
+                response.render('error', {'msg': JSON.stringify(err,null,4)});
+              } else {
+                if (stats.isFile()) {
+                  fs.readFile(path.resolve(directory, items[index]), function (err, contents) {
+                    if (err) {
+                      console.error('unable to read persistent file: ' + items[index]);
+                      response.render('error', {'msg': JSON.stringify(err, null, 4)});
                     } else {
-                        addrList += addresses[i];
+                      console.log('rendering file contents for: ' + items[index]);
+                      response.render('file', {'filename': items[index], 'file': contents});
                     }
+                  });
+                } else {
+                  let displayMsg = 'Path (' + items[index] + ') is not a file. Please only attempt to read files.';
+                  console.error(displayMsg);
+                  response.render('filesystem', {'items': items, 'directory': directory, 'displayMsg': displayMsg});
                 }
-
-                let args = {
-                    "pod": pod,
-                    "filesystem": filesystem,
-                    "pingResponse": "",
-                    "pingHost": "",
-                    "pingActive": "",
-                    "dnsResponse": addrList,
-                    "dnsHost": host,
-                    "dnsActive": "active"
-                };
-                res.render('network', args);
-            }
-        });
-    }
-});
-
-
-app.post('/ping', function(req,res){
-    let host = req.body.pingHost;
-
-    if( !host ) {
-        let message = "Please provide a host name or IP";
-        let args = {
-            "pod": pod,
-            "filesystem": filesystem,
-            "pingResponse": message,
-            "pingHost": host,
-            "pingActive": "active",
-            "dnsResponse": "",
-            "dnsHost": "",
-            "dnsActive": ""
-        };
-        res.render('network', args);
-    }
-
-    // ping options
-    let options = {
-        networkProtocol: ping.NetworkProtocol.IPv4,
-        packetSize: 16,
-        retries: 1,
-        timeout: 2000,
-        ttl: 128
-    };
-
-    let session = ping.createSession(options);
-
-    dns.resolve4(host, function(err,addresses){
-
-        if( err ) {
-            let args = {
-                "pod": pod,
-                "filesystem": filesystem,
-                "pingResponse": err,
-                "pingHost": host,
-                "pingActive": "active",
-                "dnsResponse": "",
-                "dnsHost": "",
-                "dnsActive": ""
-            };
-            res.render('network', args);
-        } else {
-            console.log( addresses );
-            let ip = addresses[0];
-            session.pingHost(ip, function(error, ip) {
-                let message;
-                if (error){
-                    message = ip + ": " + error;
-                }
-                else {
-                    message = ip + ": Alive";
-                }
-                let args = {
-                    "pod": pod,
-                    "filesystem": filesystem,
-                    "pingResponse": message,
-                    "pingHost": host,
-                    "pingActive": "active",
-                    "dnsResponse": "",
-                    "dnsHost": "",
-                    "dnsActive": ""
-                };
-                res.render('network', args);
+              }
             });
+          } else {
+            console.error('File not found.');
+            response.render('filesystem', {'items': items, 'directory': directory, 'displayMsg': 'File not found.'});
+          }
+        } else {
+          console.log('Rendering /filesystem');
+          response.render('filesystem', {'items': items, 'directory': directory});
         }
+      }
     });
-});
+  });
 
-
-app.get('/network', function(req,res){
-    let args = {
-        "pod": pod,
-        "filesystem": filesystem,
-        "pingResponse": "",
-        "pingHost": "",
-        "pingActive": "",
-        "dnsResponse": "",
-        "dnsHost": "",
-        "dnsActive": "active"
-    };
-    res.render('network', args);
-});
-
-
-app.get('/logit', function(req,res){
-    let msg = req.query.msg;
-    console.log(msg);
-    res.redirect('home');
-});
-
-app.get('/errit', function(req,res){
-    let msg = req.query.msg;
-    console.error(msg);
-    res.redirect('home');
-});
-
-
-function crash(msg, res){
-    // write message to log
-    if( !msg ) {
-        msg = 'Aaaaah!';
+  app.post('/create-file', function(request, response){
+    let filename = request.body.filename;
+    if (validFilename(filename)){
+      fs.writeFile(path.resolve(directory, filename), request.body.content, 'utf8', function (err) {
+        if (err) {
+          console.error('unable to create file: ' + filename);
+          response.render('error', {'msg': JSON.stringify(err,null,4)});
+        } else{
+          console.log('created file: ' + filename);
+          response.redirect('/filesystem');
+        }
+      });
+    } else {
+      fs.readdir(directory, function(err, items) {
+        if (err) {
+          console.error('error with persistent volume: ' + err);
+          response.render('error', {'msg': JSON.stringify(err,null,4)});
+        } else {
+          let displayMsg = 'Invalid filename: "' + filename + '".';
+          console.error(displayMsg);
+          response.render('filesystem', {'items': items, 'directory': directory, 'displayMsg': displayMsg});
+        }
+      });
     }
-    console.error(pod + ': ' + msg);
-
-    // set up timer to crash after 3 seconds
-    setTimeout( function(){
-        // process.exit(-1);  // produces simpler clear log entries than uncaught exception
-        process.nextTick(function () {
-            throw new Error;
-        });
-    }, 3000 );
-
-    // in the meantime render crash page
-    res.render('rip', {"pod": pod.substring(0,5), "msg": msg});
+  });
 }
 
-app.post('/crash', function(req,res){
-    let msg = req.body.msg;
-    if( !msg ) msg ="going down.";
-    crash(msg, res);
+
+/*
+  SECRETS URLS/FUNCTIONS
+ */
+if (hasSecret) {
+  app.get('/secrets', function (request, response) {
+    fs.readFile(secretFile, function (err, contents) {
+      if (err) {
+        console.error('secret not found');
+        response.render('error', {'msg': JSON.stringify(err, null, 4)});
+      } else {
+        console.log('Rendering /secrets');
+        response.render('secrets', {'secret': contents});
+      }
+    });
+  });
+}
+
+
+/*
+  CONFIGMAPS URLS/FUNCTIONS
+ */
+if (hasConfigMap) {
+  app.get('/configmaps', function (request, response) {
+    fs.readFile(configFile, function (err, contents) {
+      if (err) {
+        console.error('configmap not found');
+        response.render('error', {'msg': JSON.stringify(err, null, 4)});
+      } else {
+        console.log('Rendering /configmaps');
+        response.render('config', {'config': contents});
+      }
+    });
+  });
+}
+
+/*
+  ENVIRONMENT VARIABLES URLS/FUNCTIONS
+ */
+app.get('/env-variables', function(request, response) {
+  console.log('Rendering /env-variable');
+  response.render('env-variables', {'envVariables': JSON.stringify(process.env,null,4)});
 });
 
-app.get('/health', function(req, res){
-    if( healthy ) {
-        res.status(200);
+
+/*
+  NETWORKING URLS/FUNCTIONS
+ */
+app.get('/network', function(request, response) {
+  console.log('Rendering /network');
+  response.render('network');
+});
+
+app.get('/network/colors', function(request, response) {
+  let options = {
+        host: serviceIP,
+        port: servicePort,
+        path: '/',
+        method: 'GET'
+      },
+      errMessage = 'microservice endpoint not available';
+
+  http.request(options, function(httpResponse) {
+    httpResponse.setEncoding('utf8');
+    httpResponse.on('data', function (chunk) {
+      console.log('msg from microservice: ' + chunk);
+      response.writeHead(200, {'Content-Type': 'application/json'});
+      response.end(chunk);
+    }).on('error', function () {
+      console.error(errMessage);
+      response.json(errMessage);
+    });
+  }).on('error', function () {
+    console.error(errMessage);
+    response.json(errMessage);
+  }).end();
+});
+
+app.post('/network', function(request, response) {
+  let dnsHostname = request.body.dnsHost;
+  let pingHostname = request.body.pingHost;
+
+  if (dnsHostname !== undefined) {
+    console.log('DNS lookup on: ' + dnsHostname);
+    processDNS(dnsHostname, response);
+  } else if (pingHostname !== undefined) {
+    console.log('Ping attempt on: ' + pingHostname);
+    processPing(pingHostname, response);
+  } else {
+    console.error('Empty form POSTED to /network');
+    response.render('network', {'dnsResponse': 'Please provide a hostname', 'dnsHost': hostname});
+  }
+});
+
+function processDNS(hostname, response) {
+  dns.resolve4(hostname, function(err, addresses) {
+    if (err) {
+      response.render('network', {'dnsResponse': err, 'dnsHost': hostname});
     } else {
-        res.status(500);
+      let addrList = '';
+      for (let i = 0; i < addresses.length; i++) {
+        addrList += addresses[i] + '\n';
+      }
+
+      response.render('network', {'dnsResponse': addrList, 'dnsHost': hostname});
     }
-    let status = healthStatus();
-    res.send(status);
+  });
+}
+
+function processPing(hostname, response) {
+  // ping options
+  let options = {
+    networkProtocol: ping.NetworkProtocol.IPv4,
+    packetSize: 16,
+    retries: 1,
+    timeout: 2000,
+    ttl: 128
+  };
+
+  let session = ping.createSession(options), ip;
+  dns.resolve4(hostname, function(dnsError, addresses) {
+    if (dnsError) {
+      // Possibly provided an IP address directly
+      ip = hostname;
+    } else {
+      ip = addresses[0];
+    }
+    session.pingHost(ip, function(pingError, ip) {
+      response.render('network', {'pingResponse': dnsError && pingError ? dnsError + '\n' + pingError : ip + ': Alive', 'pingHost': hostname});
+    });
+  });
+}
+
+
+/*
+  ABOUT URLS/FUNCTIONS
+ */
+app.get('/about', function(request, response) {
+  console.log('Rendering /about');
+  response.render('about');
 });
 
-app.post('/health', function(req, res){
-    healthy = !healthy;
-    let status = healthStatus();
-    console.log(pod + ': ' + status);
-    res.redirect('home');
-});
 
-app.get('/config',
-    function(req, res) {
-        let config = "(file missing)";
-        let secret = "(file missing)";
-
-        if( fs.existsSync(configFile) ) {
-            config = fs.readFileSync(configFile);
-        }
-        if( fs.existsSync(secretFile) ) {
-            secret = fs.readFileSync(secretFile);
-        }
-        let prettyEnv = JSON.stringify(process.env,null,4);
-
-        res.render('config', {"pod": pod, "pretty": prettyEnv, "filesystem": filesystem, "config": config, "secret": secret });
-    }
-);
-
-
-app.get('/home',
-    function(req, res) {
-        let status = healthStatus();
-        res.render('home', {"pod": pod, "logo": logo, "healthStatus": status, "filesystem": filesystem, "version": appVersion, "sysInfoStr": sysInfoStr });
-    }
-);
-
-app.get('/version', function(req,res){
-    res.status(200).send(appVersion);
-});
-
-app.get('/',
-    function(req, res) {
-        res.redirect('home');
-    }
-);
-
+/*
+  START SERVER
+ */
 console.log(`Version: ${appVersion}` );
 console.log(sysInfoStr);
 
-
 app.listen(app.get('port'), '0.0.0.0', function() {
-    console.log(pod + ": server starting on port " + app.get('port'));
+  console.log(pod + ': server starting on port ' + app.get('port'));
 });
-
-
-
-	

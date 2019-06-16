@@ -1,84 +1,154 @@
-<html>
-<head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<%- include('templates/header.ejs'); %>
 
-    <!-- Bootstrap CSS -->
-	<link rel="stylesheet" href="css/bootstrap.min.css">
-	<link rel="icon" type="image/png" href="images/duck.png">
+<%- include('templates/nav.ejs', {page: 'network'}); %>
 
-	<title>Kubetoy Network</title>
-</head>
-
-<body>
-<div class="container">
-
-<h1>Network</h1>
-<h6>Pod: <%= pod %></h6>
-
-	<p class="text-center">
-		<%- include('nav.ejs', {page: 'network'}); %>
-	</p>
-
-	<hr>
-
-	<ul class="nav nav-tabs" role="tablist">
-		<li class="nav-item"><a class="nav-link <%= dnsActive %>" data-toggle="tab" href="#dns">DNS</a></li>
-		<li class="nav-item"><a class="nav-link <%= pingActive %>" data-toggle="tab" href="#ping">Ping</a></li>
-	</ul>
-	
-	<div class="tab-content">
-		<div id="dns" class="container tab-pane <%= dnsActive %>"><br>
-		
-			<p>This form you to perform a local DNS lookup (from the container in the pod).  </p>
-			<p>ClusterIP and NodePort services can be discovered by using a host name of the form
-			<code>my-svc.my-namespace.svc.cluster.local</code>.  The DNS response will be the
-			internal ClusterIP address.
-			</p>
-	
-			<form method="POST" action="dns">
-			  <div class="form-group">
-			    <label for="pingHost">Host</label>
-			    <input type="text" class="form-control" name="dnsHost" id="dnsHost" aria-describedby="dnsHelp" placeholder="host to lookup" value="<%= dnsHost%>">
-			    <small id="dnsHelp" class="form-text text-muted">The internal host name to look up.</small>
-			  </div>
-			  <button type="submit" class="btn btn-primary">DNS Lookup</button>
-			
-			</form>
-		
-			<pre><%= dnsResponse %></pre>
-	
-		</div>
-
-		<div id="ping" class="container tab-pane <%= pingActive %>"><br>
-
-			<p>You to can issue a ping from this application (running in the container in Kubernetes) to an external server.  Pings to internal
-			services will time out (unless the app was explicitly developed to accept pings).
-			</p>
-	
-			<form method="POST" action="ping">
-			  <div class="form-group">
-			    <label for="pingHost">Hostname/IP</label>
-			    <input type="text" class="form-control" name="pingHost" id="pingHost" aria-describedby="pingHelp" placeholder="host to ping" value="<%= pingHost %>">
-			    <small id="pingHelp" class="form-text text-muted">The external host to ping.</small>
-			  </div>
-			  <button type="submit" class="btn btn-primary">Ping</button>
-			
-			</form>
-		
-			<pre><%= pingResponse %></pre>
-		
-		</div>
-
+<div class="blank-slate-pf container-pf-nav-pf-vertical">
+	<div class="blank-slate-pf-icon">
+		<span class="pficon pficon-network"></span>
 	</div>
+	<h1>
+		Networking
+	</h1>
 
-</div>
+	<div class="row row-cards-pf">
+		<div class="col-xs-12 col-lg-6">
+			<div class="card-pf card-pf-view">
+				<div class="card-pf-body">
+					<h2 class="card-pf-title text-center mb-3">
+						<span class="pficon pficon-server"></span>
+						Hostname Lookup
+					</h2>
+					<div class="row">
+						<div class="col-xs-7">
+							<p>
+								ClusterIP and NodePort services can be discovered through
+								<a href="https://docs.openshift.com/dedicated/architecture/networking/networking.html#architecture-additional-concepts-openshift-dns" target="_blank">
+									OpenShift DNS <span class="fa fa-external-link-alt small"></span>
+								</a> by using a hostname in the form of <code style="overflow-wrap: break-word;">my-svc.my-namespace.svc.cluster.local</code>.
+								The DNS response will be the internal ClusterIP address.
+							</p>
+						</div>
+						<div class="col-xs-5 text-center">
+							<form method="POST" action="/network">
+								<div class="form-group">
+									<label for="pingHost">Hostname</label>
+									<input type="text" class="form-control" name="dnsHost" id="dnsHost" aria-describedby="dnsHelp" placeholder="Hostname" value="<%= locals.dnsHost %>">
+									<small id="dnsHelp" class="form-text text-muted">The internal host name to look up.</small>
+								</div>
+								<button type="submit" class="btn btn-primary">DNS Lookup</button>
+							</form>
+							<% if (locals.dnsResponse !== undefined && dnsResponse) { %>
+							<pre><%= dnsResponse %></pre>
+							<% } %>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="js/jquery-3.3.1.min.js"></script>
-    <script src="js/popper.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-</body>
-</html>
+		<div class="col-xs-12 col-lg-6">
+			<div class="card-pf card-pf-view">
+				<div class="card-pf-body">
+					<h2 class="card-pf-title text-center mb-3">
+						<span class="pficon pficon-service"></span>
+						Endpoint Ping
+					</h2>
+					<div class="row">
+						<div class="col-xs-7">
+							<p>
+								You can issue a ping from this application (running in the container in OpenShift)
+								to an external server. Pings to internal services will time out (unless the app
+								was explicitly developed to accept pings).
+							</p>
+						</div>
+						<div class="col-xs-5 text-center">
+							<form method="POST" action="/network">
+								<div class="form-group">
+									<label for="pingHost">Hostname/IP</label>
+									<input type="text" class="form-control" name="pingHost" id="pingHost" aria-describedby="pingHelp" placeholder="Hostname/IP" value="<%= locals.pingHost %>">
+									<small id="pingHelp" class="form-text text-muted">The external host to ping.</small>
+								</div>
+								<button type="submit" class="btn btn-primary">Ping</button>
+							</form>
+							<% if (locals.pingResponse !== undefined && pingResponse) { %>
+								<pre><%= pingResponse %></pre>
+							<% } %>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-xs-12 col-lg-6 microservice hide">
+			<div class="card-pf card-pf-view">
+				<div class="card-pf-body">
+					<h2 class="card-pf-title text-center mb-3">
+						<span class="fa fa-satellite-dish"></span>
+						Intra-cluster Communication
+					</h2>
+					<div class="row">
+						<div class="col-xs-7">
+							<p>
+								OpenShift Pods can send data back and forth without relying on any external network
+								connections. Typically, Pod communication should happen through an
+								<a href="https://docs.openshift.com/dedicated/architecture/core_concepts/pods_and_services.html#services" target="_blank">
+									OpenShift Service <span class="fa fa-external-link-alt small"></span>
+								</a>. Services allow for load balancing connections to multiple backing pods,
+								while also providing a persistent and consistent endpoint, whereas Pod endpoint IPs
+								are ephemeral.
+							</p>
+						</div>
+						<div class="col-xs-4 text-center">
+							<h2>Remote Pods</h2>
+							<ul id="cluster-pods"></ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div><!-- /row -->
+
+</div><!-- /container -->
+
+<script src="/js/jquery.min.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+	updateColors();
+});
+
+function updateColors() {
+	var clusterPods = $('#cluster-pods'),
+		podItems = clusterPods.find('li');
+
+	$.get('/network/colors?timestamp=' + $.now(), function(data) {
+		if (data !== undefined && data.hasOwnProperty('pod') && data.hasOwnProperty('color')) {
+			var li = $('#' + data.pod);
+			if (li.length > 0) {
+				// update
+				li.replaceWith('<li id="' + data.pod + '" data-timestamp="' + $.now() + '"><div style="padding: 10px; background-color: ' + data.color + '">' + data.pod + '</div></li>');
+			} else {
+				// create
+				clusterPods.append('<li id="' + data.pod + '" data-timestamp="' + $.now() + '"><div style="padding: 10px; background-color: ' + data.color + '">' + data.pod + '</div></li>');
+			}
+		}
+	});
+
+	if (podItems.length === 0) {
+		clusterPods.parents('div.microservice').addClass('hide');
+	} else {
+		clusterPods.parents('div.microservice').removeClass('hide');
+		clusterPods.find('li').each(function () {
+			var currLi = $(this);
+			// Remove <li> elements older than 5 seconds
+			if (Date.now() - new Date(currLi.data('timestamp')) >= 5000) {
+				currLi.remove();
+			}
+		});
+	}
+
+	setTimeout(updateColors, 500);
+}
+</script>
+
+<%- include('templates/footer.ejs', {excludeJquery: true}); %>

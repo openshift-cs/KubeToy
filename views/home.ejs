@@ -1,82 +1,129 @@
-<html>
-<head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self';">
+<%- include('templates/header.ejs'); %>
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/subdomain.css">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="icon" type="image/png" href="images/favicon.ico">
+<%- include('templates/nav.ejs', {page: 'home'}); %>
 
-    <title>OpenShift Dedicated Demo</title>
-</head>
-<body>
+<!--<div class="container-fluid container-cards-pf container-pf-nav-pf-vertical hide-nav-pf">-->
+<div class="blank-slate-pf container-pf-nav-pf-vertical">
+    <div class="blank-slate-pf-icon">
+        <span class="pficon pficon-home"></span>
+    </div>
+    <h1>
+        Shifty Demo: v<%= appVersion %>
+    </h1>
 
-<div class="container">
-
-    <div class="jumbotron p-4 mb-5 mt-2">
-        <div class="container">
-            <div class="row mb-4">
-                <div class="col-2 ml-auto">
-                    <img src="images/<%=logo %>"/>
-                </div>
-                <div class="col-3 mr-auto">
-                    <h1 class="display-4 my-0">Demo</h1>
+    <div class="row row-cards-pf">
+        <div class="col-xs-12 col-lg-6">
+            <div class="card-pf card-pf-view">
+                <div class="card-pf-body">
+                    <h2 class="card-pf-title text-success text-center mb-3">
+                        <span class="fa fa-pencil"></span>
+                        Log Message (stdout)
+                    </h2>
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <p>
+                                This simply demonstrates how you can print <em>stdout</em> output to a pod's logs from
+                                within your application.
+                            </p>
+                        </div>
+                        <div class="col-xs-6 text-center">
+                            <form class="form-inline" method="POST" action="/log-stdout">
+                                <input type="text" class="form-control mb-2" name="message" placeholder="Message for stdout">
+                                <div class="input-group-prepend">
+                                    <button type="submit" class="btn btn-primary">Send Message</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        <p>A toy application to explore OpenShift deployments.<br>Version: <%=version %></p>
-        <hr class="my-2">
-        <p>Currently being served up by pod: <%=pod%><br><%=sysInfoStr%></p>
-    </div>
-
-    <p class="text-center">
-        <%- include('nav.ejs', {page: 'home'}); %>
-    </p>
-
-    <hr>
-
-    <div class="row">
-        <div class="col-sm">
-            <form class="form-inline" method="GET" action="logit">
-                <input type="text" class="form-control mb-2 mr-sm-2" name="msg" placeholder="Message for stdout">
-                <div class="input-group-prepend">
-                    <button type="submit" class="btn btn-primary mb-2">Log It!</button>
+        <div class="col-xs-12 col-lg-6">
+            <div class="card-pf card-pf-view">
+                <div class="card-pf-body">
+                    <h2 class="card-pf-title text-danger text-center mb-3">
+                        <span class="fa fa-bug"></span>
+                        Log Message (stderr)
+                    </h2>
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <p>
+                                This simply demonstrates how you can print <em>stderr</em> output to a pod's logs from
+                                within your application.
+                            </p>
+                        </div>
+                        <div class="col-xs-6 text-center">
+                            <form class="form-inline" method="POST" action="/log-stderr">
+                                <input type="text" class="form-control mb-2" name="message" placeholder="Message for stderr">
+                                <div class="input-group-prepend">
+                                    <button type="submit" class="btn btn-primary">Send Message</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                 </div>
-            </form>
-            <form class="form-inline" method="GET" action="errit">
-                <input type="text" class="form-control mb-2 mr-sm-2" name="msg" placeholder="Message for stderr">
-                <div class="input-group-prepend">
-                    <button type="submit" class="btn btn-danger mb-2">Err It!</button>
-                </div>
-            </form>
-            <form class="form-inline" method="POST" action="crash">
-                <input type="text" class="form-control mb-2 mr-sm-2" name="msg" placeholder="Crash message">
-                <div class="input-group-prepend">
-                    <button type="submit" class="btn btn-primary mb-2">Crash Me!</button>
-                </div>
-            </form>
+            </div>
         </div>
-        <div class="col-sm">
-            <form class="form-inline" method="POST" action="health">
-                <p><%= healthStatus %></p> &nbsp; <button type="submit" id="health" class="btn btn-primary mb-2">Toggle Health</button>
-            </form>
-            <form class="form-inline" method="GET" action="mutate">
-                <button type="submit" class="btn btn-success mb-2">Mutate</button>
-            </form>
-
+        <div class="col-xs-12 col-lg-6">
+            <div class="card-pf card-pf-view">
+                <div class="card-pf-body">
+                    <h2 class="card-pf-title text-warning text-center mb-3">
+                        <span class="fa fa-bomb"></span>
+                        Crash pod
+                    </h2>
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <p>
+                                Force this pod to hit an uncaught exception, ending the running
+                                application unexpectedly and exiting the pod. The
+                                <a href="https://docs.openshift.com/dedicated/architecture/core_concepts/deployments.html#replication-controllers" target="_blank">
+                                    Replication Controller <span class="fa fa-external-link-alt small"></span>
+                                </a> enforces a user-defined number of pods is always running and available.
+                                This is why a new pod is deployed shortly after crashing.
+                            </p>
+                        </div>
+                        <div class="col-xs-6 text-center">
+                            <form class="form-inline" method="POST" action="/crash">
+                                <input type="text" class="form-control mb-2" name="message" placeholder="Crash message">
+                                <div class="input-group-prepend">
+                                    <button type="submit" class="btn btn-primary">Crash Pod</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
+        <div class="col-xs-12 col-lg-6">
+            <div class="card-pf card-pf-view">
+                <div class="card-pf-body">
+                    <h2 class="card-pf-title text-info text-center mb-3">
+                        <span class="fa fa-heartbeat"></span>
+                        Toggle health status
+                    </h2>
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <p>
+                                A <a href="https://docs.openshift.com/dedicated/dev_guide/application_health.html"
+                                     target="_blank">
+                                    Liveness Probe <span class="fa fa-external-link-alt small"></span>
+                                </a> has been configured on this deployment. This ensures
+                                that if the app doesn't respond with a "healthy" response (200 HTTP code), the pod
+                                is assumed unhealthy and is restarted automatically.
+                            </p>
+                        </div>
+                        <div class="col-xs-6 text-center">
+                            <p><strong>Current Health:</strong> <em><%= healthStatus %></em></p>
+                            <form method="POST" action="/health">
+                                <button type="submit" id="health" class="btn btn-primary">Toggle Health</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div><!-- /row -->
 
-</div>
+</div><!-- /container -->
 
-<!-- jQuery first, then Popper.js, then Bootstrap JS -->
-<script src="js/jquery-3.3.1.min.js"></script>
-<script src="js/popper.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
-
-</body>
-</html>
+<%- include('templates/footer.ejs'); %>

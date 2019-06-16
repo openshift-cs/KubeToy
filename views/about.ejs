@@ -1,0 +1,48 @@
+<%- include('templates/header.ejs'); %>
+
+<%- include('templates/nav.ejs', page='about'); %>
+
+<div class="blank-slate-pf container-pf-nav-pf-vertical">
+    <div class="blank-slate-pf-icon">
+        <span class="pficon pficon-info"></span>
+    </div>
+    <h1>
+        About Shifty Demo <%= appVersion %>
+    </h1>
+
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3 text-left">
+            <p>
+                This application is a simple Node.js application that is expected to run in a
+                container deployed by OpenShift. It was created to help explore OpenShift Dedicated
+                by allowing the user to write messages to the log, crash the application, and even
+                create and view files on a persistent filesystem.
+            </p>
+            <p>
+                This project is based on a similar project by IBM,
+                <a href="https://github.com/IBM-ICP-CoC/KubeToy" target="_blank">
+                    KubeToy <span class="fa fa-external-link-alt small"></span>
+                </a>.
+            </p>
+            <p>
+                This app uses <a href="https://www.patternfly.org/" target="_blank">
+                    PatternFly <span class="fa fa-external-link-alt small"></span>
+                </a>, <a href="https://getbootstrap.com/docs/3.4/" target="_blank">
+                    Bootstrap v3 <span class="fa fa-external-link-alt small"></span>
+                </a>, and some custom styling. All the files have been copied locally
+                to this application so Internet connectivity is not required and can work in an air-gapped system.
+            </p>
+            <p>
+                The app was adapted from KubeToy by Will Gordon <em>&lt;wgordon@redhat.com&gt;</em>. The app is made available under the
+                <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">
+                    Apache 2.0 license <span class="fa fa-external-link-alt small"></span>
+                </a>. If you find any bugs or would like to request enhancements, please create an issue on our
+                <a href="https://github.com/openshift-cs/openshift-dedicated-demo/issues" target="_blank">
+                    GitHub repository <span class="fa fa-external-link-alt small"></span>
+                </a>, and we'll do what we can to address them.
+            </p>
+        </div>
+    </div>
+</div>
+
+<%- include('templates/footer.ejs'); %>

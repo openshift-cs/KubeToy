@@ -1,0 +1,147 @@
+.openshift-logo {
+    height: 48px;
+}
+
+.text-white {
+    color: white;
+}
+
+.version-nav {
+    line-height: 1.3;
+    min-width: 175px;
+}
+
+.file-list a.list-group-item {
+    color: #0088ce;
+}
+
+.file-output.blank-slate-pf {
+    padding: 30px;
+}
+
+.blank-slate-pf {
+    padding-top: 30px !important;
+}
+
+.mt-1 {
+    margin-top: 5px !important;
+}
+.mt-2 {
+    margin-top: 10px !important;
+}
+.mt-3 {
+    margin-top: 15px !important;
+}
+.mt-4 {
+    margin-top: 20px !important;
+}
+.mt-5 {
+    margin-top: 25px !important;
+}
+
+.mb-1 {
+    margin-bottom: 5px !important;
+}
+.mb-2 {
+    margin-bottom: 10px !important;
+}
+.mb-3 {
+    margin-bottom: 15px !important;
+}
+.mb-4 {
+    margin-bottom: 20px !important;
+}
+.mb-5 {
+    margin-bottom: 25px !important;
+}
+
+.mr-1 {
+    margin-right: 5px !important;
+}
+.mr-2 {
+    margin-right: 10px !important;
+}
+.mr-3 {
+    margin-right: 15px !important;
+}
+.mr-4 {
+    margin-right: 20px !important;
+}
+.mr-5 {
+    margin-right: 25px !important;
+}
+
+.ml-1 {
+    margin-left: 5px !important;
+}
+.ml-2 {
+    margin-left: 10px !important;
+}
+.ml-3 {
+    margin-left: 15px !important;
+}
+.ml-4 {
+    margin-left: 20px !important;
+}
+.ml-5 {
+    margin-left: 25px !important;
+}
+
+.mx-auto {
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+.d-block {
+    display: block !important;
+}
+
+@font-face {
+    font-family: "RedHatDisplay";
+    font-display: fallback;
+    src: url(../fonts/RedHat/RedHatDisplay-Regular.eot);
+    src: url(../fonts/RedHat/RedHatDisplay-Regular.eot?#iefix) format("embedded-opentype"), url(../fonts/RedHat/RedHatDisplay-Regular.woff) format("woff");
+    font-style: normal;
+    font-weight: 300;
+    text-rendering: optimizeLegibility
+}
+
+@font-face {
+    font-family: "RedHatDisplay";
+    font-display: fallback;
+    src: url(../fonts/RedHat/RedHatDisplay-Medium.eot);
+    src: url(../fonts/RedHat/RedHatDisplay-Medium.eot?#iefix) format("embedded-opentype"), url(../fonts/RedHat/RedHatDisplay-Medium.woff) format("woff");
+    font-style: normal;
+    font-weight: 400;
+    text-rendering: optimizeLegibility
+}
+
+@font-face {
+    font-family: "RedHatDisplay";
+    font-display: fallback;
+    src: url(../fonts/RedHat/RedHatDisplay-Bold.eot);
+    src: url(../fonts/RedHat/RedHatDisplay-Bold.eot?#iefix) format("embedded-opentype"), url(../fonts/RedHat/RedHatDisplay-Bold.woff) format("woff");
+    font-style: normal;
+    font-weight: 700;
+    text-rendering: optimizeLegibility
+}
+
+@font-face {
+    font-family: "RedHatText";
+    font-display: fallback;
+    src: url(../fonts/RedHat/RedHatText-Regular.eot);
+    src: url(../fonts/RedHat/RedHatText-Regular.eot?#iefix) format("embedded-opentype"), url(../fonts/RedHat/RedHatText-Regular.woff) format("woff");
+    font-style: normal;
+    font-weight: 400;
+    text-rendering: optimizeLegibility
+}
+
+@font-face {
+    font-family: "RedHatText";
+    font-display: fallback;
+    src: url(../fonts/RedHat/RedHatText-Medium.eot);
+    src: url(../fonts/RedHat/RedHatText-Medium.eot?#iefix) format("embedded-opentype"), url(../fonts/RedHat/RedHatText-Medium.woff) format("woff");
+    font-style: normal;
+    font-weight: 700;
+    text-rendering: optimizeLegibility
+}

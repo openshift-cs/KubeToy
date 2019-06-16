@@ -1,134 +1,44 @@
-<html>
-<head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<%- include('templates/header.ejs'); %>
 
-    <!-- Bootstrap CSS -->
-	<link rel="stylesheet" href="css/bootstrap.min.css">
-	<link rel="icon" type="image/png" href="images/duck.png">
-	<script src="js/jquery-3.3.1.min.js"></script>
-	<script src="js/popper.min.js"></script>
-	<script src="js/bootstrap.min.js"></script>
+<%- include('templates/nav.ejs', {page: 'configmaps'}); %>
 
-	<title>Kubetoy ConfigMaps and Secrets</title>
-    <script type="text/javascript">
-        function encode() {
-            input = document.getElementById ("input");
-            data = window.btoa (input.value);
-            result = document.getElementById("result");
-            result.value = data;
-        }
-        function decode() {
-            input = document.getElementById ("input");
-            data = window.atob (input.value);
-            result = document.getElementById("result");
-            result.value = data;
-        }
-    </script>
-</head>
-
-<body>
-<div class="container">
-
-<h1>ConfigMaps and Secrets</h1>
-<h6>Pod: <%= pod %></h6>
-
-	<p class="text-center">
-		<%- include('nav.ejs', {page: 'config'}); %>
-	</p>
-
-	<hr>
-
-<div class="container">
-	<ul class="nav nav-tabs" role="tablist">
-		<li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#configmap">ConfigMap File</a></li>
-		<li class="nav-item"><a class="nav-link" data-toggle="tab" href="#secret">Secret File</a></li>
-		<li class="nav-item"><a class="nav-link" data-toggle="tab" href="#env">Environment Variables</a></li>
-	</ul>
-
-	<div class="tab-content">
-		<div id="env" class="container tab-pane"><br>
-			<pre><%=pretty%></pre>
-		</div>
-
-		<div id="configmap" class="container tab-pane active"><br>
-			<p>A Kubernetes ConfigMap resource was created and was mounted to a volume inside this container. 
-				This resource defines that a file called <code>config.json</code>.  It also defines its contents, 
-				which can be edited by the ICP operator to provide configuration data at deployment time.  The folder
-				that this file appears in is defined by the kubernetes deployment object.  In this case it is	
-				<code>/var/config/</code>.
-
-				</p>
-			<p>The application current contents of this configmap are:</p>
-			
-<pre class="bg-light">
-<%= config %>
-</pre>
-			
-			<p>You can change this value with the UI or CLI.  It usually takes a miniute or two for the change to be
-				reflected in the application.</p>
-		</div>
-
-		<div id="secret" class="container tab-pane"><br>
-
-	      <p>
-					A Kubernetes Secret resource was created and was mounted to a volume in this container.  The kubernetes
-					secret object definition is almost identical to a configmap, with the only notible difference is that the 
-					values of the secret are base64 encoded.  In this application the kubernetes secret object looks like:
-				</p>
-<pre>
-apiVersion: v1
-kind: Secret
-metadata:
-  name: kubetoy-secret-files
-type: Opaque
-  data:
-    toy-secret.txt: U2hoLi4uIFRoaXMgaXMgYSBzZWNyZXQu
-</pre>
-
-		<p>
-			The applicaiton however does not have to perform the conversion, the secret is automatically decoded for the 
-			container application.  In this example the secret is:
-		</p>
-		
-<pre class="bg-light">
-<%= secret %>
-</pre>
-		<p>You can also change 
-		this value with the UI or CLI, and eventually this app will see the updated content.  The utility at the bottom
-		of this page will help you manually do the base64 conversions.  As with configmaps changes usually 
-		takes a few minutes to roll out.</p>
-		
-		<hr/>
-
-	<div>
-	<p>The following utility can be used to convert to and from Baes64 encoding.</p>
+<div class="blank-slate-pf container-pf-nav-pf-vertical">
+	<div class="blank-slate-pf-icon">
+		<span class="fa fa-cogs"></span>
 	</div>
-	
-	<div class="card align-top" style="width: 24rem; ">
-	  <div class="card-body">
-	    <h5 class="card-title">Base64 Encoder/Decoder</h5>
-		    <label for="input" >Input</label>
-		    <input type="text" class="form-control" id="input" placeholder="a string value">
-		    <label for="result" >Result</label>
-		    <input type="text" readonly class="form-control" name="result" id="result" value="">
-		    <p></p>
-		    <button class="btn btn-primary btn-sm" onclick="encode();">Encode</button> &nbsp;
-		    <button class="btn btn-primary btn-sm" onclick="decode();">Decode</button>
-	  </div>
-	</div>
+	<h1>
+		Config Maps
+	</h1>
 
+	<div class="row">
+		<div class="col-md-6 col-md-offset-3">
+			<p>
+				An <a href="https://docs.openshift.com/dedicated/dev_guide/configmaps.html" target="_blank">
+					OpenShift ConfigMap <span class="fa fa-external-link-alt small"></span>
+				</a> resource was created and mounted to a volume inside this container. This resource
+				defines a filename as the <em>key</em> element within the ConfigMap. It also defines its contents,
+				which can be populated from an existing file or directly from the CLI or within the web console.
+				The folder that this file appears in is defined by the deployment object.
+			</p>
+			<p>
+				The current contents of this ConfigMap are:
+			</p>
 		</div>
 	</div>
-	
-</div>
-	
 
+	<div class="row">
+		<div class="col-md-8 col-md-offset-2 text-left">
+			<pre><%= locals.config %></pre>
+		</div>
+	</div>
 
+	<div class="row">
+		<div class="col-md-6 col-md-offset-3">
+			<p>
+				You can change this value with the CLI or within web console. It usually takes a minute or two for the change to be reflected in the application.
+			</p>
+		</div>
+	</div>
 </div>
 
-
-
-</body>
-</html>
+<%- include('templates/footer.ejs'); %>
