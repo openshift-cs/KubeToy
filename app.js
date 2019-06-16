@@ -9,9 +9,6 @@ const fs = require('fs');
 const ping = require('net-ping');
 const http = require('http');
 const dns = require('dns');
-const { uname } = require('node-uname');
-const sysInfo = uname();
-const sysInfoStr = `${sysInfo.machine} - ${sysInfo.release}`;
 const appVersion = '1.1.0';
 
 
@@ -63,7 +60,6 @@ let hasConfigMap = fs.existsSync(configFile);
   SETUP COMMON, SHARED VARIABLES
  */
 app.locals.pod = pod;
-app.locals.sysInfoStr = sysInfoStr;
 app.locals.appVersion = appVersion;
 app.locals.hasFilesystem = hasFilesystem;
 app.locals.hasSecret = hasSecret;
@@ -93,7 +89,6 @@ app.get('/', function(request, response) {
 });
 
 app.get('/home', function(request, response) {
-  console.log('Rendering /home');
   let status = healthStatus();
   response.render('home', {'healthStatus': status});
 });
@@ -193,7 +188,6 @@ if (hasFilesystem) {
             response.render('filesystem', {'items': items, 'directory': directory, 'displayMsg': 'File not found.'});
           }
         } else {
-          console.log('Rendering /filesystem');
           response.render('filesystem', {'items': items, 'directory': directory});
         }
       }
@@ -238,7 +232,6 @@ if (hasSecret) {
         console.error('secret not found');
         response.render('error', {'msg': JSON.stringify(err, null, 4)});
       } else {
-        console.log('Rendering /secrets');
         response.render('secrets', {'secret': contents});
       }
     });
@@ -256,7 +249,6 @@ if (hasConfigMap) {
         console.error('configmap not found');
         response.render('error', {'msg': JSON.stringify(err, null, 4)});
       } else {
-        console.log('Rendering /configmaps');
         response.render('config', {'config': contents});
       }
     });
@@ -267,7 +259,6 @@ if (hasConfigMap) {
   ENVIRONMENT VARIABLES URLS/FUNCTIONS
  */
 app.get('/env-variables', function(request, response) {
-  console.log('Rendering /env-variable');
   response.render('env-variables', {'envVariables': JSON.stringify(process.env,null,4)});
 });
 
@@ -276,7 +267,6 @@ app.get('/env-variables', function(request, response) {
   NETWORKING URLS/FUNCTIONS
  */
 app.get('/network', function(request, response) {
-  console.log('Rendering /network');
   response.render('network');
 });
 
@@ -307,14 +297,10 @@ app.get('/network/colors', function(request, response) {
 
 app.post('/network', function(request, response) {
   let dnsHostname = request.body.dnsHost;
-  let pingHostname = request.body.pingHost;
 
   if (dnsHostname !== undefined) {
     console.log('DNS lookup on: ' + dnsHostname);
     processDNS(dnsHostname, response);
-  } else if (pingHostname !== undefined) {
-    console.log('Ping attempt on: ' + pingHostname);
-    processPing(pingHostname, response);
   } else {
     console.error('Empty form POSTED to /network');
     response.render('network', {'dnsResponse': 'Please provide a hostname', 'dnsHost': hostname});
@@ -336,36 +322,11 @@ function processDNS(hostname, response) {
   });
 }
 
-function processPing(hostname, response) {
-  // ping options
-  let options = {
-    networkProtocol: ping.NetworkProtocol.IPv4,
-    packetSize: 16,
-    retries: 1,
-    timeout: 2000,
-    ttl: 128
-  };
-
-  let session = ping.createSession(options), ip;
-  dns.resolve4(hostname, function(dnsError, addresses) {
-    if (dnsError) {
-      // Possibly provided an IP address directly
-      ip = hostname;
-    } else {
-      ip = addresses[0];
-    }
-    session.pingHost(ip, function(pingError, ip) {
-      response.render('network', {'pingResponse': dnsError && pingError ? dnsError + '\n' + pingError : ip + ': Alive', 'pingHost': hostname});
-    });
-  });
-}
-
 
 /*
   ABOUT URLS/FUNCTIONS
  */
 app.get('/about', function(request, response) {
-  console.log('Rendering /about');
   response.render('about');
 });
 

@@ -22,7 +22,6 @@
 		"ejs": "^2.6.1",
 		"express": "^4.17.0",
 		"net-ping": "^1.2.3",
-		"node-uname": "^2.0.0",
 		"valid-filename": "^3.1.0"
 	},
 	"private": true

@@ -1,2 +1,0 @@
-# ConfigMaps and Secrets
-

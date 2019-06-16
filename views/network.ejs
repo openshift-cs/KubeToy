@@ -46,39 +46,6 @@
 			</div>
 		</div>
 
-		<div class="col-xs-12 col-lg-6">
-			<div class="card-pf card-pf-view">
-				<div class="card-pf-body">
-					<h2 class="card-pf-title text-center mb-3">
-						<span class="pficon pficon-service"></span>
-						Endpoint Ping
-					</h2>
-					<div class="row">
-						<div class="col-xs-7">
-							<p>
-								You can issue a ping from this application (running in the container in OpenShift)
-								to an external server. Pings to internal services will time out (unless the app
-								was explicitly developed to accept pings).
-							</p>
-						</div>
-						<div class="col-xs-5 text-center">
-							<form method="POST" action="/network">
-								<div class="form-group">
-									<label for="pingHost">Hostname/IP</label>
-									<input type="text" class="form-control" name="pingHost" id="pingHost" aria-describedby="pingHelp" placeholder="Hostname/IP" value="<%= locals.pingHost %>">
-									<small id="pingHelp" class="form-text text-muted">The external host to ping.</small>
-								</div>
-								<button type="submit" class="btn btn-primary">Ping</button>
-							</form>
-							<% if (locals.pingResponse !== undefined && pingResponse) { %>
-								<pre><%= pingResponse %></pre>
-							<% } %>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-
 		<div class="col-xs-12 col-lg-6 microservice hide">
 			<div class="card-pf card-pf-view">
 				<div class="card-pf-body">
@@ -140,8 +107,8 @@ function updateColors() {
 		clusterPods.parents('div.microservice').removeClass('hide');
 		clusterPods.find('li').each(function () {
 			var currLi = $(this);
-			// Remove <li> elements older than 5 seconds
-			if (Date.now() - new Date(currLi.data('timestamp')) >= 5000) {
+			// Remove <li> elements older than 10 seconds
+			if (Date.now() - new Date(currLi.data('timestamp')) >= 10000) {
 				currLi.remove();
 			}
 		});
