@@ -79,6 +79,12 @@ $ oc patch dc/shifty-demo -p '{"spec": {"strategy": {"type": "Recreate"}}}'
 
 deploymentconfig "shifty-demo" patched
 
+# Set a Liveness probe on the Deployment to ensure the pod is restarted if something
+# isn't healthy within the application
+$ oc set probe dc/shifty-demo --liveness --get-url=http://:8080/health
+
+deploymentconfig "shifty-demo" updated
+
 # Attach Secret, ConfigMap, and PersistentVolume to deployment
 # We are using the default paths defined in the application, but these paths
 # can be overriden in the application via environment variables

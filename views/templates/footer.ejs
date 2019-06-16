@@ -1,6 +1,4 @@
-<% if (locals.excludeJquery === undefined || !excludeJquery) { %>
 <script src="/js/jquery.min.js" type="text/javascript"></script>
-<% } %>
 <script src="/js/jquery.matchHeight-min.js" type="text/javascript"></script>
 <script src="/js/bootstrap.min.js" type="text/javascript"></script>
 <script src="/js/patternfly.min.js" type="text/javascript"></script>
@@ -17,5 +15,7 @@
     });
 </script>
 
+<% if (locals.excludeClosingTags === undefined || !excludeClosingTags) { %>
 </body>
 </html>
+<% } %>
