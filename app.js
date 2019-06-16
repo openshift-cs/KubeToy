@@ -12,7 +12,7 @@ const dns = require('dns');
 const { uname } = require('node-uname');
 const sysInfo = uname();
 const sysInfoStr = `${sysInfo.machine} - ${sysInfo.release}`;
-const appVersion = '1.0.0';
+const appVersion = '1.1.0';
 
 
 /*

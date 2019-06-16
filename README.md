@@ -1,5 +1,5 @@
-# OpenShift Dedicated Demo
-## v1.0.0
+# Shifty Demo
+## v1.1.0
 
 A simple Node.js application that deploys to OpenShift Dedicated. It is used to help 
 explore the functionality of Kubernetes. This toy application has a user interface 
