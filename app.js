@@ -335,7 +335,6 @@ app.get('/about', function(request, response) {
   START SERVER
  */
 console.log(`Version: ${appVersion}` );
-console.log(sysInfoStr);
 
 app.listen(app.get('port'), '0.0.0.0', function() {
   console.log(pod + ': server starting on port ' + app.get('port'));
