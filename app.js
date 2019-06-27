@@ -54,6 +54,7 @@ let healthy = true;
 let hasFilesystem = fs.existsSync(directory);
 let hasSecret = fs.existsSync(secretFile);
 let hasConfigMap = fs.existsSync(configFile);
+let enableAROLogo = process.env.ENABLE_ARO_LOGO || false;
 
 
 /*
@@ -64,6 +65,7 @@ app.locals.appVersion = appVersion;
 app.locals.hasFilesystem = hasFilesystem;
 app.locals.hasSecret = hasSecret;
 app.locals.hasConfigMap = hasConfigMap;
+app.locals.enableAROLogo = enableAROLogo;
 
 
 /*
@@ -95,10 +97,8 @@ app.get('/home', function(request, response) {
 
 app.get('/health', function(request, response) {
   if( healthy ) {
-    console.log('Responding to /health endpoint healthy');
     response.status(200);
   } else {
-    console.log('Responding to /health endpoint not healthy');
     response.status(500);
   }
   let status = healthStatus();

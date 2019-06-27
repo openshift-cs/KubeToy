@@ -1,17 +1,38 @@
 # Shifty Demo
 ## v1.1.0
 
-A simple Node.js application that deploys to OpenShift Dedicated. It is used to help 
-explore the functionality of Kubernetes. This toy application has a user interface 
+A simple Node.js application that deploys to OpenShift Dedicated. It is used to help
+explore the functionality of Kubernetes. This toy application has a user interface
 which you can:
 
 * write messages to the log (stdout / stderr)
 * intentionally crash the application to view auto repair
-* toggle a liveness probe and monitor OpenShift behavior  
+* toggle a liveness probe and monitor OpenShift behavior
 * if provided; read config maps, secrets, and env variables
 * if connected to shared storage, read and write files
 * check network connectivity, intra-cluster DNS, and intra-communication with an
   included microservice
+
+
+# Configuration
+## Environment Variables
+
+- **PORT** (*default: 8080*): The port to expose the application on
+- **MICROSERVICE_NAME** (*default: none*): The upper-cased name of the Service object associated
+with the microservice application (be sure to also replace any `-` with `_`)
+- **MICROSERVICE_IP** (*default: <MICROSERVICE_NAME>\_SERVICE\_HOST*): The static IP of the Service
+object associated with the microservice application. This will be looked up from automatic OpenShift
+environment variables if `MICROSERVICE_NAME` is provided
+- **MICROSERVICE_PORT** (*default: <MICROSERVICE_NAME>\_SERVICE\_PORT*): The exposed port of the Service
+object associated with the microservice application. This will be looked up from automatic OpenShift
+environment variables if `MICROSERVICE_NAME` is provided
+- **CONFIG_FILE** (*default: /var/config/config.json*): The fully-qualified path to the file created by
+the ConfigMap object
+- **SECRET_FILE** (*default: /var/secret/secret.txt*): The fully-qualified path to the file created by
+the Secret object
+- **PERSISTENT_DIRECTORY** (*default: /var/demo\_files*): The fully-qualified path to the directory mounted
+with the PersistentVolume
+- **ENABLE_ARO_LOGO** (*default: false*): Specify `true` in order to enable the Azure Red Hat OpenShift logo
 
 
 # Deployment
@@ -54,7 +75,7 @@ Success
   Application is not exposed. You can expose services to the outside world by executing one or more of the commands below:
    'oc expose svc/shifty-microservice'
   Run 'oc status' to view your app.
-  
+
 # Deploy the UI Application
 # The applicaiton has been architected to rely on several environment variables to define
 # external settings. We will attach the previously created Secret and ConfigMap afterward,
@@ -72,7 +93,7 @@ Success
   Application is not exposed. You can expose services to the outside world by executing one or more of the commands below:
    'oc expose svc/shifty-demo'
   Run 'oc status' to view your app.
-  
+
 # Update Deployment to use a "Recreate" deployment strategy for consistent deployments
 # with persistent volumes
 $ oc patch dc/shifty-demo -p '{"spec": {"strategy": {"type": "Recreate"}}}'

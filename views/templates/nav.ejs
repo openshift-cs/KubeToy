@@ -9,7 +9,11 @@
         </button>
         <% } %>
         <a href="/home" class="navbar-brand" style="padding: 5px;">
+            <% if (locals.enableAROLogo === undefined || enableAROLogo === false) { %>
             <img class="navbar-brand-name openshift-logo" src="/images/OpenShiftDedicated.png" alt="OpenShift Dedicated logo"/>
+            <% } else { %>
+            <img class="navbar-brand-name openshift-logo" src="/images/AzureRedHatOpenShift.png" alt="Azure Red Hat OpenShift logo"/>
+            <% } %>
         </a>
     </div>
 
