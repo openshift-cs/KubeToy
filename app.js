@@ -6,10 +6,9 @@ const bodyParser = require('body-parser');
 const validFilename = require('valid-filename');
 const path = require('path');
 const fs = require('fs');
-const ping = require('net-ping');
 const http = require('http');
 const dns = require('dns');
-const appVersion = '1.1.0';
+const appVersion = '1.2.0';
 
 
 /*
@@ -54,7 +53,6 @@ let healthy = true;
 let hasFilesystem = fs.existsSync(directory);
 let hasSecret = fs.existsSync(secretFile);
 let hasConfigMap = fs.existsSync(configFile);
-let enableAROLogo = process.env.ENABLE_ARO_LOGO || false;
 
 
 /*
@@ -65,7 +63,6 @@ app.locals.appVersion = appVersion;
 app.locals.hasFilesystem = hasFilesystem;
 app.locals.hasSecret = hasSecret;
 app.locals.hasConfigMap = hasConfigMap;
-app.locals.enableAROLogo = enableAROLogo;
 
 
 /*

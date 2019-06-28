@@ -3,12 +3,12 @@
 <%- include('templates/nav.ejs'); %>
 
 <div class="blank-slate-pf container-pf-nav-pf-vertical file-output">
+    <a href="/filesystem" class="btn btn-primary"><span class="fa fa-angle-left"></span> Back</a>
     <h1>
-        <a href="/filesystem" class="pull-left small"><span class="fa fa-angle-left"></span> Back</a>
         <%= locals.filename %>
     </h1>
     <div class="row">
-        <div class="col-xs-8 col-xs-offset-2 text-left">
+        <div class="col-xs-6">
             <pre><%= locals.file %></pre>
         </div>
     </div>

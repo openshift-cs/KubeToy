@@ -3,10 +3,8 @@
 <%- include('templates/nav.ejs', {page: 'network'}); %>
 
 <div class="blank-slate-pf container-pf-nav-pf-vertical">
-	<div class="blank-slate-pf-icon">
-		<span class="pficon pficon-network"></span>
-	</div>
 	<h1>
+		<span class="pficon pficon-network small"></span>
 		Networking
 	</h1>
 
@@ -14,24 +12,24 @@
 		<div class="col-xs-12 col-lg-6">
 			<div class="card-pf card-pf-view">
 				<div class="card-pf-body">
-					<h2 class="card-pf-title text-center mb-3">
+					<h2 class="card-pf-title mb-3">
 						<span class="pficon pficon-server"></span>
 						Hostname Lookup
 					</h2>
 					<div class="row">
-						<div class="col-xs-7">
+						<div class="col-xs-7 col-lg-8">
 							<p>
 								ClusterIP and NodePort services can be discovered through
-								<a href="https://docs.openshift.com/dedicated/architecture/networking/networking.html#architecture-additional-concepts-openshift-dns" target="_blank">
+								<a href="https://docs.openshift.com/container-platform/3.11/architecture/networking/networking.html#architecture-additional-concepts-openshift-dns" target="_blank">
 									OpenShift DNS <span class="fa fa-external-link-alt small"></span>
 								</a> by using a hostname in the form of <code style="overflow-wrap: break-word;">my-svc.my-namespace.svc.cluster.local</code>.
 								The DNS response will be the internal ClusterIP address.
 							</p>
 						</div>
-						<div class="col-xs-5 text-center">
+						<div class="col-xs-5 col-lg-4 text-right">
 							<form method="POST" action="/network">
 								<div class="form-group">
-									<label for="pingHost">Hostname</label>
+									<label for="dnsHost">Hostname</label>
 									<input type="text" class="form-control" name="dnsHost" id="dnsHost" aria-describedby="dnsHelp" placeholder="Hostname" value="<%= locals.dnsHost %>">
 									<small id="dnsHelp" class="form-text text-muted">The internal host name to look up.</small>
 								</div>
@@ -49,7 +47,7 @@
 		<div class="col-xs-12 col-lg-6 microservice hide">
 			<div class="card-pf card-pf-view">
 				<div class="card-pf-body">
-					<h2 class="card-pf-title text-center mb-3">
+					<h2 class="card-pf-title mb-3">
 						<span class="fa fa-satellite-dish"></span>
 						Intra-cluster Communication
 					</h2>
@@ -58,7 +56,7 @@
 							<p>
 								OpenShift Pods can send data back and forth without relying on any external network
 								connections. Typically, Pod communication should happen through an
-								<a href="https://docs.openshift.com/dedicated/architecture/core_concepts/pods_and_services.html#services" target="_blank">
+								<a href="https://docs.openshift.com/container-platform/3.11/architecture/core_concepts/pods_and_services.html#services" target="_blank">
 									OpenShift Service <span class="fa fa-external-link-alt small"></span>
 								</a>. Services allow for load balancing connections to multiple backing pods,
 								while also providing a persistent and consistent endpoint, whereas Pod endpoint IPs

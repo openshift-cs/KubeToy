@@ -3,18 +3,16 @@
 <%- include('templates/nav.ejs', page='about'); %>
 
 <div class="blank-slate-pf container-pf-nav-pf-vertical">
-    <div class="blank-slate-pf-icon">
-        <span class="pficon pficon-info"></span>
-    </div>
     <h1>
+        <span class="pficon pficon-info small"></span>
         About Shifty Demo <%= appVersion %>
     </h1>
 
     <div class="row">
-        <div class="col-md-6 col-md-offset-3 text-left">
+        <div class="col-md-6">
             <p>
                 This application is a simple Node.js application that is expected to run in a
-                container deployed by OpenShift. It was created to help explore OpenShift Dedicated
+                container deployed by OpenShift. It was created to help explore OpenShift
                 by allowing the user to write messages to the log, crash the application, and even
                 create and view files on a persistent filesystem.
             </p>
@@ -37,7 +35,7 @@
                 <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">
                     Apache 2.0 license <span class="fa fa-external-link-alt small"></span>
                 </a>. If you find any bugs or would like to request enhancements, please create an issue on our
-                <a href="https://github.com/openshift-cs/openshift-dedicated-demo/issues" target="_blank">
+                <a href="https://github.com/openshift-cs/shifty-demo/issues" target="_blank">
                     GitHub repository <span class="fa fa-external-link-alt small"></span>
                 </a>, and we'll do what we can to address them.
             </p>

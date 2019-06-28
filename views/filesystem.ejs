@@ -14,20 +14,18 @@
         </div>
     <% } %>
 
-    <div class="blank-slate-pf-icon">
-        <span class="pficon pficon-folder-open"></span>
-    </div>
     <h1>
+        <span class="pficon pficon-folder-open small"></span>
         Persistent Storage
     </h1>
 
     <div class="row">
-        <div class="col-md-6 col-md-offset-3">
+        <div class="col-md-6">
             <p>
                 Pods and Containers in OpenShift are ephemeral, meaning that when they terminate, any changes that
                 may have occurred, including changes to the filesystem, are lost. This is intended behavior, and
                 the way to ensure your filesystem changes are preserved is to rely on
-                <a href="https://docs.openshift.com/dedicated/architecture/additional_concepts/storage.html" target="_blank">
+                <a href="https://docs.openshift.com/container-platform/3.11/architecture/additional_concepts/storage.html" target="_blank">
                     Persistent Storage <span class="fa fa-external-link-alt small"></span>
                 </a>. Persistent storage allows you to define a Persistent Volume Claim to request persistent storage. You
                 can then define the mount point for this storage within your Deployment.
@@ -40,7 +38,27 @@
     </div>
 
     <div class="row">
-        <div class="col-md-4 col-md-offset-1">
+        <hr class="col-md-6" style="border-top-color: #c5c5c5;">
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <h4>Existing files</h4>
+
+            <div class="list-group file-list">
+                <% for (let i = 0; i < items.length; i++) { %>
+                    <a class="list-group-item list-group-item-action" href="/filesystem?filenameIndex=<%= i %>"><%= items[i] %></a>
+                <% } %>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <hr class="col-md-6" style="border-top-color: #c5c5c5;">
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
             <form method="POST" action="/create-file">
                 <div class="form-group">
                     <label for="filename">Filename</label>
@@ -53,15 +71,6 @@
                 </div>
                 <button type="submit" class="btn btn-primary">Create file</button>
             </form>
-        </div>
-        <div class="col-md-4 col-md-offset-2">
-            <h4>Existing files</h4>
-
-            <div class="list-group file-list">
-                <% for (let i = 0; i < items.length; i++) { %>
-                    <a class="list-group-item list-group-item-action" href="/filesystem?filenameIndex=<%= i %>"><%= items[i] %></a>
-                <% } %>
-            </div>
         </div>
     </div>
 

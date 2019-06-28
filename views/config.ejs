@@ -3,17 +3,15 @@
 <%- include('templates/nav.ejs', {page: 'configmaps'}); %>
 
 <div class="blank-slate-pf container-pf-nav-pf-vertical">
-	<div class="blank-slate-pf-icon">
-		<span class="fa fa-cogs"></span>
-	</div>
 	<h1>
+		<span class="fa fa-cogs small"></span>
 		Config Maps
 	</h1>
 
 	<div class="row">
-		<div class="col-md-6 col-md-offset-3">
+		<div class="col-md-6">
 			<p>
-				An <a href="https://docs.openshift.com/dedicated/dev_guide/configmaps.html" target="_blank">
+				An <a href="https://docs.openshift.com/container-platform/3.11/dev_guide/configmaps.html" target="_blank">
 					OpenShift ConfigMap <span class="fa fa-external-link-alt small"></span>
 				</a> resource was created and mounted to a volume inside this container. This resource
 				defines a filename as the <em>key</em> element within the ConfigMap. It also defines its contents,
@@ -27,13 +25,13 @@
 	</div>
 
 	<div class="row">
-		<div class="col-md-8 col-md-offset-2 text-left">
+		<div class="col-md-6">
 			<pre><%= locals.config %></pre>
 		</div>
 	</div>
 
 	<div class="row">
-		<div class="col-md-6 col-md-offset-3">
+		<div class="col-md-6">
 			<p>
 				You can change this value with the CLI or within web console. It usually takes a minute or two for the change to be reflected in the application.
 			</p>

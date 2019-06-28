@@ -1,7 +1,7 @@
 # Shifty Demo
-## v1.1.0
+## v1.2.0
 
-A simple Node.js application that deploys to OpenShift Dedicated. It is used to help
+A simple Node.js application that deploys to OpenShift. It is used to help
 explore the functionality of Kubernetes. This toy application has a user interface
 which you can:
 
@@ -32,7 +32,6 @@ the ConfigMap object
 the Secret object
 - **PERSISTENT_DIRECTORY** (*default: /var/demo\_files*): The fully-qualified path to the directory mounted
 with the PersistentVolume
-- **ENABLE_ARO_LOGO** (*default: false*): Specify `true` in order to enable the Azure Red Hat OpenShift logo
 
 
 # Deployment

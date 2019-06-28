@@ -3,14 +3,12 @@
 <%- include('templates/nav.ejs'); %>
 
 <div class="blank-slate-pf container-pf-nav-pf-vertical">
-    <div class="blank-slate-pf-icon">
-        <span class="pficon pficon-error-circle-o"></span>
-    </div>
     <h1>
+        <span class="pficon pficon-error-circle-o small"></span>
         Error Encountered!
     </h1>
     <div class="row">
-        <div class="col-md-8 col-md-offset-2 text-left">
+        <div class="col-md-6">
             <pre><%= locals.msg %></pre>
         </div>
     </div>

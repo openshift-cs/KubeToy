@@ -21,6 +21,13 @@
 
 .blank-slate-pf {
     padding-top: 30px !important;
+    margin-bottom: 0 !important;
+    min-height: 100% !important;
+    text-align: left !important;
+}
+
+.blank-slate-pf > h1 {
+    margin-bottom: 25px !important;
 }
 
 .mt-1 {
