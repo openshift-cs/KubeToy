@@ -8,7 +8,7 @@ const path = require('path');
 const fs = require('fs');
 const http = require('http');
 const dns = require('dns');
-const appVersion = '1.2.0';
+const appVersion = '1.2.1';
 
 
 /*
