@@ -42,14 +42,14 @@ with the PersistentVolume
 # Add Secret to OpenShift
 # The example emulates a `.env` file and shows how easy it is to move these directly into an
 # OpenShift environment. Files can even be renamed in the Secret
-$ oc create secret generic ostoy-secret --from-file=secret.txt=deployment/examples/secret.env
+$ oc create -f https://raw.githubusercontent.com/openshift-cs/ostoy/master/deployment/yaml/secret.yaml
 
 secret "ostoy-secret" created
 
 # Add ConfigMap to OpenShift
 # The example emulates an HAProxy config file, and is typically used for overriding
 # default configurations in an OpenShift application. Files can even be renamed in the ConfigMap
-$ oc create configmap ostoy-config --from-file=config.json=deployment/examples/haproxy.config
+$ oc create -f https://raw.githubusercontent.com/openshift-cs/ostoy/master/deployment/yaml/configmap.yaml
 
 configmap "ostoy-config" created
 
