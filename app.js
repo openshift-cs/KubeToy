@@ -265,10 +265,6 @@ app.get('/env-variables', function(request, response) {
  */
 
 app.get('/hpa', function(request, response) {
-  response.render('hpa');
-});
-
-app.get('/hpa', function(request, response) {
     let options = {
         host: serviceIP,
         port: servicePort,
