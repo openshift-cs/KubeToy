@@ -261,7 +261,7 @@ app.get('/env-variables', function(request, response) {
 
 
 /*
-  NETWORKING URLS/FUNCTIONS
+  NETWORKING URLS/FUNCTIONS.
  */
 
 app.get('/hpa', function(request, response) {
