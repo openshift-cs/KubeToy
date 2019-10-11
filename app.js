@@ -268,6 +268,31 @@ app.get('/hpa', function(request, response) {
   response.render('hpa');
 });
 
+app.get('/hpa', function(request, response) {
+    let options = {
+        host: serviceIP,
+        port: servicePort,
+        path: '/',
+        method: 'GET'
+      },
+      errMessage = 'microservice endpoint not available';
+
+  http.request(options, function(httpResponse) {
+    httpResponse.setEncoding('utf8');
+    httpResponse.on('data', function (chunk) {
+      console.log('msg from microservice: ' + chunk);
+      response.writeHead(200, {'Content-Type': 'application/json'});
+      response.end(chunk);
+    }).on('error', function () {
+      console.error(errMessage);
+      response.json(errMessage);
+    });
+  }).on('error', function () {
+    console.error(errMessage);
+    response.json(errMessage);
+  }).end();
+});
+
 app.get('/network', function(request, response) {
   response.render('network');
 });
