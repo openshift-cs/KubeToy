@@ -29,7 +29,7 @@ function getRandomGrayScaleColor() {
   return '#' + grayscale.toString(16);
 }
 
-app.get('/hpa', function(req,res){
+app.get('/hpa', function(request, response){
 
   console.time('mySlowFunction');
   let result = 0;
