@@ -32,3 +32,21 @@ function getRandomGrayScaleColor() {
 app.listen(app.get('port'), '0.0.0.0', function() {
   console.log(pod + ': microservice starting on port ' + app.get('port'));
 });
+
+app.get('/hpa', function(req,res){
+
+function mySlowFunction() {
+  console.time('mySlowFunction');
+  let result = 0;
+  let baseNumber = 5; //change this to make it slower or faster by increasing/decreasing this number  
+  for (var i = Math.pow(baseNumber, 7); i >= 0; i--) {    
+    result += Math.atan(i) * Math.tan(i);
+  };
+
+  response.writeHead(200, {'Content-Type': 'application/json'});
+  response.end("OK!");
+
+  console.timeEnd('mySlowFunction');
+}
+
+});
