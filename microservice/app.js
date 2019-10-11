@@ -31,7 +31,6 @@ function getRandomGrayScaleColor() {
 
 app.get('/hpa', function(req,res){
 
-function mySlowFunction() {
   console.time('mySlowFunction');
   let result = 0;
   let baseNumber = 5; //change this to make it slower or faster by increasing/decreasing this number  
@@ -43,7 +42,6 @@ function mySlowFunction() {
   response.end("OK!");
 
   console.timeEnd('mySlowFunction');
-}
 
 });
 
