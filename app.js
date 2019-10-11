@@ -268,7 +268,7 @@ app.get('/hpa', function(request, response) {
     let options = {
         host: serviceIP,
         port: servicePort,
-        path: '/',
+        path: '/hpa',
         method: 'GET'
       },
       errMessage = 'microservice endpoint not available';
