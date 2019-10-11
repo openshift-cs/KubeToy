@@ -29,10 +29,6 @@ function getRandomGrayScaleColor() {
   return '#' + grayscale.toString(16);
 }
 
-app.listen(app.get('port'), '0.0.0.0', function() {
-  console.log(pod + ': microservice starting on port ' + app.get('port'));
-});
-
 app.get('/hpa', function(req,res){
 
 function mySlowFunction() {
@@ -43,10 +39,14 @@ function mySlowFunction() {
     result += Math.atan(i) * Math.tan(i);
   };
 
-  //response.writeHead(200, {'Content-Type': 'application/json'});
+  response.writeHead(200, {'Content-Type': 'application/json'});
   response.end("OK!");
 
   console.timeEnd('mySlowFunction');
 }
 
+});
+
+app.listen(app.get('port'), '0.0.0.0', function() {
+  console.log(pod + ': microservice starting on port ' + app.get('port'));
 });
