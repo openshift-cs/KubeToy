@@ -43,7 +43,7 @@ function mySlowFunction() {
     result += Math.atan(i) * Math.tan(i);
   };
 
-  response.writeHead(200, {'Content-Type': 'application/json'});
+  //response.writeHead(200, {'Content-Type': 'application/json'});
   response.end("OK!");
 
   console.timeEnd('mySlowFunction');
