@@ -263,6 +263,11 @@ app.get('/env-variables', function(request, response) {
 /*
   NETWORKING URLS/FUNCTIONS
  */
+
+app.get('/hpa', function(request, response) {
+  response.render('hpa');
+});
+
 app.get('/network', function(request, response) {
   response.render('network');
 });
