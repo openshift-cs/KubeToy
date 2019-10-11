@@ -39,7 +39,9 @@ app.get('/hpa', function(request, response){
   };
 
   response.writeHead(200, {'Content-Type': 'application/json'});
-  response.end("OK!");
+  response.end(JSON.stringify({
+    'status': 'OK'
+  }));
 
   console.timeEnd('mySlowFunction');
 
