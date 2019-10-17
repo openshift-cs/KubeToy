@@ -33,7 +33,7 @@ app.get('/hpa', function(request, response){
 
   console.time('mySlowFunction');
   let result = 0;
-  let baseNumber = 11; //change this to make it slower or faster by increasing/decreasing this number  
+  let baseNumber = 13; //change this to make it slower or faster by increasing/decreasing this number  
   for (var i = Math.pow(baseNumber, 6); i >= 0; i--) {    
     result += Math.atan(i) * Math.tan(i);
   };
