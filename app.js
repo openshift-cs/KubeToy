@@ -261,8 +261,13 @@ app.get('/env-variables', function(request, response) {
 
 
 /*
-  NETWORKING URLS/FUNCTIONS.
+  Horizontal Pod Autoscaler URLS/FUNCTIONS.
  */
+
+app.get('/autoscaler', function(request, response) {
+  response.render('autoscaler');
+});
+
 
 app.get('/hpa', function(request, response) {
     let options = {
@@ -288,6 +293,10 @@ app.get('/hpa', function(request, response) {
     response.json(errMessage);
   }).end();
 });
+
+/*
+  NETWORKING URLS/FUNCTIONS.
+ */
 
 app.get('/network', function(request, response) {
   response.render('network');
