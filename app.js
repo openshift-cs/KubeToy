@@ -265,7 +265,7 @@ app.get('/env-variables', function(request, response) {
  */
 
 app.get('/autoscaler', function(request, response) {
-  response.render('autoscaler');
+  response.render('autoscaling');
 });
 
 
