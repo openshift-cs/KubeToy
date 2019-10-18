@@ -4,19 +4,17 @@
 
 <div class="blank-slate-pf container-pf-nav-pf-vertical">
 	<h1>
-		<span class="pficon pficon-network small"></span>
+		<span class="fa fa-cubes small"></span>
 		Networking
 	</h1>
 
 	<div class="row">
 		<p class="col-lg-6 mb-5">
-			OpenShift Pods can send data back and forth without relying on any external network
-			connections. Typically, Pod communication should happen through an
-			<a href="https://docs.openshift.com/container-platform/3.11/architecture/core_concepts/pods_and_services.html#services" target="_blank">
-				OpenShift Service <span class="fa fa-external-link-alt small"></span>
-			</a>. Services allow for load balancing connections to multiple backing pods,
-			while also providing a persistent and consistent endpoint, whereas Pod endpoint IPs
-			are ephemeral.
+			OpenShift being Kubernetes can automatically scale up the number of pods in order to handle
+			an increase in traffic or workload by utilizing the
+			<a href="https://docs.openshift.com/container-platform/3.11/dev_guide/pod_autoscaling.html#hpa-supported-metrics" target="_blank">
+				Horizontal Pod Autoscaler <span class="fa fa-external-link-alt small"></span>
+			</a>. Autoscaling can be set by CPU utilization or Memory utilization.
 		</p>
 	</div>
 
@@ -27,15 +25,15 @@
 					<div class="row">
 						<div class="col-xs-7">
 							<h2 class="card-pf-title mb-3">
-								<span class="fa fa-satellite-dish"></span>
-								Intra-cluster Communication
+								<!--<span class="fa fa-satellite-dish"></span>-->
+								AutoScaling
 							</h2>
 							<p>
-								This list of <em>Remote Pods</em> increases or decreases dynamically based on the number
+								As was in the Networking tsection this list of <em>Remote Pods</em> increases or decreases dynamically based on the number
 								of microservice Pods running. You can
-								<a href="https://docs.openshift.com/container-platform/3.11/dev_guide/deployments/basic_deployment_operations.html#scaling" target="_blank">
-									manually scale <span class="fa fa-external-link-alt small"></span>
-								</a> the number of pods from the CLI or within the web console.
+								<a onclick="createLoad()" href="javascript:void(0);">
+									increase the load </a>
+								on the microservice and watch how the number of pods scale up here. The number of pods can also be seen from the CLI or within the web console.
 							</p>
 						</div>
 						<div class="col-xs-5">
@@ -58,6 +56,13 @@
 $(document).ready(function() {
 	updateColors();
 });
+
+function createLoad() {
+	var i;
+	for(i = 0;i < 10, i++) {
+		$.get('/hpa');
+	}
+}
 
 function updateColors() {
 	var clusterPods = $('#cluster-pods'),
