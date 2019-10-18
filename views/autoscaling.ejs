@@ -54,7 +54,8 @@
 
 <script type="text/javascript">
 $(document).ready(function() {
-	updateColors();
+//	updateColors();
+
 });
 
 function createLoad() {
@@ -66,10 +67,10 @@ function createLoad() {
 	
 	$.get('/hpa');
 	
-	if (window.my_time_loop == 12) {
+	if (window.my_time_loop == 15) {
 		return;
 	} else {
-		setTimeout(createLoad, 2000);
+		setTimeout(createLoad, 2500);
 	}
 };
 
@@ -108,7 +109,7 @@ function updateColors() {
 		});
 	}
 
-	setTimeout(updateColors, 500);
+	setTimeout(updateColors, 1000);
 }
 </script>
 
