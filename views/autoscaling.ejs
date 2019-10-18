@@ -66,10 +66,10 @@ function createLoad() {
 	
 	$.get('/hpa');
 	
-	if (window.my_time_loop == 10) {
+	if (window.my_time_loop == 12) {
 		return;
 	} else {
-		setTimeout(createLoad, 1500);
+		setTimeout(createLoad, 2000);
 	}
 };
 
