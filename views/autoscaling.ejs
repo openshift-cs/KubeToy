@@ -58,9 +58,18 @@ $(document).ready(function() {
 });
 
 function createLoad() {
-	var i;
-	for(i = 0;i < 10; i++) {
-		$.get('/hpa');
+	if (window.my_time_loop === undefined) {
+		window.my_time_loop = 0;
+	} else {
+		window.my_time_loop += 1;
+	}
+	
+	$.get('/hpa');
+	
+	if (window.my_time_loop == 10) {
+		return;
+	} else {
+		setTimeout(createLoad, 1500);
 	}
 };
 
