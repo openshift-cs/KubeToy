@@ -279,19 +279,14 @@ app.get('/hpa', function(request, response) {
       errMessage = 'microservice endpoint not available';
 
   http.request(options, function(httpResponse) {
-    httpResponse.setEncoding('utf8');
-    httpResponse.on('data', function (chunk) {
-      console.log('msg from microservice: ' + chunk);
-      response.writeHead(200, {'Content-Type': 'application/json'});
-      response.end(chunk);
-    }).on('error', function () {
-      console.error(errMessage);
-      response.json(errMessage);
-    });
+      return;
   }).on('error', function () {
     console.error(errMessage);
     response.json(errMessage);
   }).end();
+  
+  response.writeHead(200);
+  response.end('done');
 });
 
 /*
