@@ -264,7 +264,7 @@ app.get('/env-variables', function(request, response) {
   Horizontal Pod Autoscaler URLS/FUNCTIONS.
  */
 
-app.get('/autoscaler', function(request, response) {
+app.get('/autoscaling', function(request, response) {
   response.render('autoscaling');
 });
 
