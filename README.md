@@ -1,5 +1,5 @@
 # OSToy
-## v1.2.2
+## v1.3
 
 A simple Node.js application that deploys to OpenShift. It is used to help
 explore the functionality of Kubernetes. This toy application has a user interface
@@ -12,6 +12,7 @@ which you can:
 * if connected to shared storage, read and write files
 * check network connectivity, intra-cluster DNS, and intra-communication with an
   included microservice
+* increase the load to test out Horizontal Pod Autoscaler
 
 
 # Configuration
@@ -156,3 +157,4 @@ $ python -m webbrowser "$(oc get route ostoy -o template --template='https://{{.
 * Rearchitected in a cleaner format
 * Include intra-cluster communication from Networking page
   * Adds a separate `microservice` sub-deployment
+* Add function to increase load to test HPA
