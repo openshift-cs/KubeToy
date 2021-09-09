@@ -8,7 +8,7 @@ app.get('/', function(request, response) {
   let randomColor = getRandomColor(); // <-- comment this
   //let randomColor = getRandomGrayScaleColor(); // <-- uncomment this
 
-  response.writeHead(50, {'Content-Type': 'application/json'});
+  response.writeHead(100, {'Content-Type': 'application/json'});
   response.end(JSON.stringify({
     'pod': pod,
     'color': randomColor
