@@ -5,7 +5,7 @@ app.set('port', process.env.PORT || 8080);
 let pod = process.env.HOSTNAME || 'unknown-pod';
 
 app.get('/', function(request, response) {
-  let randomColor = getRandomColor(); // <-- comment this
+  ;let randomColor = getRandomColor(); // <-- comment this
   //let randomColor = getRandomGrayScaleColor(); // <-- uncomment this
 
   response.writeHead(200, {'Content-Type': 'application/json'});
