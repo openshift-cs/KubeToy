@@ -43,3 +43,4 @@ typings/
 .fusebox/
 .dynamodb/
 .idea/
+.dockerignore

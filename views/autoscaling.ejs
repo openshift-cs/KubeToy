@@ -5,16 +5,16 @@
 <div class="blank-slate-pf container-pf-nav-pf-vertical">
 	<h1>
 		<span class="fa fa-cubes small"></span>
-		Autoscaling
+		Horizontal Pod Autoscaling
 	</h1>
 
 	<div class="row">
 		<p class="col-lg-6 mb-5">
 			OpenShift being Kubernetes can automatically scale up the number of pods in order to handle
 			an increase in traffic or workload by utilizing the
-			<a href="https://docs.openshift.com/dedicated/4/nodes/pods/nodes-pods-autoscaling.html" target="_blank">
+			<a href="https://docs.openshift.com/container-platform/latest/nodes/pods/nodes-pods-autoscaling.html" target="_blank">
 				Horizontal Pod Autoscaler <span class="fa fa-external-link-alt small"></span>
-			</a>. Autoscaling can be set by CPU utilization or Memory utilization.
+			</a> (HPA). Autoscaling can be set by CPU utilization or memory utilization.
 		</p>
 	</div>
 
@@ -26,7 +26,7 @@
 						<div class="col-xs-7">
 							<h2 class="card-pf-title mb-3">
 								<!--<span class="fa fa-satellite-dish"></span>-->
-								AutoScaling
+								Pod AutoScaling
 							</h2>
 							<p>
 								As was in the Networking section this list of <em>Remote Pods</em> increases or decreases dynamically based on the number
@@ -65,9 +65,9 @@ function createLoad() {
 	} else {
 		window.my_time_loop += 1;
 	}
-	
+
 	$.get('/hpa');
-	
+
 	if (window.my_time_loop == 15) {
 		return;
 	} else {

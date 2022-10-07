@@ -1,5 +1,5 @@
 # OSToy
-## v1.4.0
+## v1.5.0
 
 A simple Node.js application that deploys to OpenShift. It is used to help
 explore the functionality of Kubernetes. This toy application has a user interface

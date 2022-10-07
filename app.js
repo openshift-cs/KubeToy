@@ -8,7 +8,7 @@ const path = require('path');
 const fs = require('fs');
 const http = require('http');
 const dns = require('dns');
-const appVersion = '1.4.0';
+const appVersion = '1.5.0';
 
 
 /*
@@ -284,7 +284,7 @@ app.get('/hpa', function(request, response) {
     console.error(errMessage);
     response.json(errMessage);
   }).end();
-  
+
   response.writeHead(200);
   response.end('done');
 });

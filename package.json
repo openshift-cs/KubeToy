@@ -1,6 +1,6 @@
 {
 	"name": "ostoy",
-	"version": "1.4.0",
+	"version": "1.5.0",
 	"description": "",
 	"keywords": [],
 	"homepage": "https://github.com/openshift-cs/ostoy",
@@ -8,7 +8,8 @@
 	"license": "Apache-2.0",
 	"author": "OpenShift Team <community@openshift.com>",
 	"contributors": [
-		"Will Gordon <wgordon@redhat.com>"
+		"Will Gordon <wgordon@redhat.com>",
+		"Oren Kashi <okashi@redhat.com>"
 	],
 	"repository": {
 		"type": "git",
@@ -18,9 +19,9 @@
 		"start": "node app.js"
 	},
 	"dependencies": {
-		"body-parser": "^1.19.0",
-		"ejs": "^2.6.1",
-		"express": "^4.17.0",
+		"body-parser": "^1.20.0",
+		"ejs": "^3.1.8",
+		"express": "^4.17.3",
 		"valid-filename": "^3.1.0"
 	},
 	"private": true
