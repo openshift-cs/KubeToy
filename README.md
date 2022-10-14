@@ -13,6 +13,7 @@ which you can:
 * check network connectivity, intra-cluster DNS, and intra-communication with an
   included microservice
 * increase the load to test out Horizontal Pod Autoscaler
+* if deployed to AWS, use the app to read the contents of an S3 bucket created with the AWS Controller for Kubernetes
 
 
 # Configuration
@@ -33,6 +34,8 @@ the ConfigMap object
 the Secret object
 - **PERSISTENT_DIRECTORY** (*default: /var/demo\_files*): The fully-qualified path to the directory mounted
 with the PersistentVolume
+- **CLOUD**: The cloud that this app is running on (ex: AWS).
+- **NAMESPACE**: Namespace that this application is deployed into. This is used for the S3 bucket.
 
 
 # Deployment
@@ -158,3 +161,4 @@ $ python -m webbrowser "$(oc get route ostoy -o template --template='https://{{.
 * Include intra-cluster communication from Networking page
   * Adds a separate `microservice` sub-deployment
 * Add function to increase load to test HPA
+* Add ACK integration

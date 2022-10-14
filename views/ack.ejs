@@ -1,0 +1,44 @@
+<%- include('templates/header.ejs'); %>
+
+<%- include('templates/nav.ejs', {page: 'configmaps'}); %>
+
+<div class="blank-slate-pf container-pf-nav-pf-vertical">
+	<h1>
+		<span class="fa fa-cogs small"></span>
+		AWS Controller for Kubernetes (ACK)
+	</h1>
+
+	<div class="row">
+		<div class="col-lg-6">
+			<p>
+				The <a href="https://aws-controllers-k8s.github.io/community/docs/community/overview/" target="_blank"> AWS Controller for Kubernetes (ACK)
+				<span class="fa fa-external-link-alt small"></span> </a> lets you define and use AWS service resources directly from Kubernetes. With ACK,
+				you can take advantage of AWS-managed services for your Kubernetes applications without needing to define resources outside of the cluster
+				or run services that provide supporting capabilities like databases or message queues within the cluster.
+			</p>
+			<p>
+				In order to make use of this page please follow the setup steps in the workshop. Below you can see the contents of your S3 bucket
+				(limited to the first 10). If you click on the filename you will be able to view the contents in the browser.
+		</div>
+	</div>
+	<div class="row">
+			<div class="col-lg-4">
+					<h4>Existing files in: <%= bucketname %></h4>
+					<div class="list-group file-list">
+							<%
+							var numObjects = s3Objects.length;
+
+							if (numObjects == 0){%>
+								<div class="list-group-item list-group-item-action">There are no objects in the bucket.</div>
+							<%}
+							else {
+							for(var i=0; i<numObjects; i++) {%>
+									<a class="list-group-item list-group-item-action" href="/getFile?filename=<%= s3Objects[i].Key %>"><%= s3Objects[i].Key %></a>
+							<% }
+							} %>
+					</div>
+			</div>
+	</div>
+</div>
+
+<%- include('templates/footer.ejs'); %>

@@ -65,15 +65,20 @@
                 <span class="pficon pficon-network" data-toggle="tooltip" title="Networking"></span>
                 <span class="list-group-item-value">Networking</span>
             </a>
-
         </li>
         <li class="list-group-item<% if (locals.page !== undefined && page == 'autoscaling') { %> active<% } %>">
             <a href="/autoscaling">
-                <span class="fa fa-cubes" data-toggle="tooltip" title="Auto Scaling"></span>
-                <span class="list-group-item-value">Auto Scaling</span>
+                <span class="fa fa-cubes" data-toggle="tooltip" title="Pod Auto Scaling"></span>
+                <span class="list-group-item-value">Pod Auto Scaling</span>
             </a>
-
+        <% if (locals.cloud === "AWS" && cloud) { %>
+        <li class="list-group-item<% if (locals.page !== undefined && page == 'ack') { %> active<% } %>">
+            <a href="/ack">
+                <span class="fa fa-server" data-toggle="tooltip" title="AWS Controller Kubernetes"></span>
+                <span class="list-group-item-value">ACK S3</span>
+            </a>
         </li>
+        <% } %>
         <li class="list-group-item<% if (locals.page !== undefined && page == 'about') { %> active<% } %>">
             <a href="/about">
                 <span class="pficon pficon-info" data-toggle="tooltip" title="About"></span>

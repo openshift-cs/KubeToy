@@ -8,6 +8,7 @@ const path = require('path');
 const fs = require('fs');
 const http = require('http');
 const dns = require('dns');
+const AWS = require('aws-sdk');
 const appVersion = '1.5.0';
 
 
@@ -23,6 +24,9 @@ app.use(bodyParser.urlencoded({
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 app.set('port', process.env.PORT || 8080);
+
+// Set the region
+AWS.config.update({region: 'us-west-2'});  //TODO change to envvar
 
 
 /*
@@ -48,6 +52,12 @@ if (!path.isAbsolute(directory)) { directory = path.resolve(__dirname, directory
 // Pod name
 let pod = process.env.HOSTNAME || 'Unknown pod';
 
+//Cloud - which cloud
+let cloud = process.env.CLOUD;
+
+//Namespace
+let ns = process.env.NAMESPACE;
+
 // Booleans
 let healthy = true;
 let hasFilesystem = fs.existsSync(directory);
@@ -63,6 +73,7 @@ app.locals.appVersion = appVersion;
 app.locals.hasFilesystem = hasFilesystem;
 app.locals.hasSecret = hasSecret;
 app.locals.hasConfigMap = hasConfigMap;
+app.locals.cloud = cloud;
 
 
 /*
@@ -259,6 +270,56 @@ app.get('/env-variables', function(request, response) {
   response.render('env-variables', {'envVariables': JSON.stringify(process.env,null,4)});
 });
 
+/*
+  AWS CONTROLLER FOR KUBERNETES
+*/
+
+//To get the selected file from the S3 bucket and render to the browser
+app.get('/getFile', function(request, response) {
+  if (cloud !== "AWS") {
+    response.render('error', {'msg': 'Wrong cloud platform. In order to use the ACK this must be run on AWS.'});
+  } else {
+    //Create S3 service object
+    s3 = new AWS.S3({apiVersion: '2006-03-01'});
+
+    var bucketParams = {
+      Bucket : ns + "-bucket",  //the bucket name will be "<namespace>-bucket"
+      Key: request.query.filename
+    };
+
+    s3.getObject(bucketParams, function(err, data){
+      if (err) {
+        response.render('error', {'msg': err});
+      } else {
+        response.type(data.ContentType); // Set FileType
+        response.send(data.Body);        // Send File Buffer
+      }
+    });
+  }
+});
+
+//returns the objects in the bucket
+app.get('/ack', function(request, response) {
+  if (cloud !== "AWS") {
+    response.render('error', {'msg': 'Wrong cloud platform. In order to use the ACK this must be run on AWS.'});
+  } else {
+    // Create S3 service object
+    s3 = new AWS.S3({apiVersion: '2006-03-01'});
+
+    var bucketParams = {
+      Bucket : ns + "-bucket",  //the bucket name will be "<namespace>-bucket"
+      MaxKeys: 10
+    };
+
+    s3.listObjects(bucketParams, function(err, data){
+      if (err) {
+        response.render('error', {'msg': err});
+      } else {
+        response.render('ack', {'s3Objects': data.Contents, 'bucketname': data.Name});
+      }
+    });
+  }
+});
 
 /*
   Horizontal Pod Autoscaler URLS/FUNCTIONS.
@@ -267,7 +328,6 @@ app.get('/env-variables', function(request, response) {
 app.get('/autoscaling', function(request, response) {
   response.render('autoscaling');
 });
-
 
 app.get('/hpa', function(request, response) {
     let options = {
