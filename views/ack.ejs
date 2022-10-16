@@ -1,28 +1,29 @@
 <%- include('templates/header.ejs'); %>
 
-<%- include('templates/nav.ejs', {page: 'configmaps'}); %>
+<%- include('templates/nav.ejs', {page: 'ack'}); %>
 
 <div class="blank-slate-pf container-pf-nav-pf-vertical">
 	<h1>
-		<span class="fa fa-cogs small"></span>
+		<span class="fa fa-server small"></span>
 		AWS Controller for Kubernetes (ACK)
 	</h1>
 
 	<div class="row">
-		<div class="col-lg-6">
+		<div class="col-lg-9">
 			<p>
 				The <a href="https://aws-controllers-k8s.github.io/community/docs/community/overview/" target="_blank"> AWS Controller for Kubernetes (ACK)
-				<span class="fa fa-external-link-alt small"></span> </a> lets you define and use AWS service resources directly from Kubernetes. With ACK,
+				<span class="fa fa-external-link-alt small"></span></a> lets you define and use AWS service resources directly from Kubernetes. With ACK,
 				you can take advantage of AWS-managed services for your Kubernetes applications without needing to define resources outside of the cluster
 				or run services that provide supporting capabilities like databases or message queues within the cluster.
 			</p>
 			<p>
 				In order to make use of this page please follow the setup steps in the workshop. Below you can see the contents of your S3 bucket
-				(limited to the first 10). If you click on the filename you will be able to view the contents in the browser.
+				(limited to the first 10). Click on the filename to view the contents of your file.
+			</p>
 		</div>
 	</div>
 	<div class="row">
-			<div class="col-lg-4">
+			<div class="col-lg-6">
 					<h4>Existing files in: <%= bucketname %></h4>
 					<div class="list-group file-list">
 							<%
@@ -37,6 +38,26 @@
 							<% }
 							} %>
 					</div>
+			</div>
+	</div>
+	<hr class="col-lg-9" style="border-top-color: #c5c5c5;">
+	<div class="row">
+			<div class="col-lg-6">
+				<h4>Upload a text file to S3</h4>
+				<p>In this section you can create a file to upload to your S3 bucket directly from this application. Enter a file name and some text in the contents box and then click
+					"Create file".</p>
+					<form method="POST" action="/s3upload">
+							<div class="form-group">
+									<label for="filename">Filename</label>
+									<input type="text" class="form-control" name="filename" id="filename" aria-describedby="filenameHelp" placeholder="Filename">
+									<small id="filenameHelp" class="form-text text-muted">A text type of extension (eg. .txt) is suggested to enable browser viewing.</small>
+							</div>
+							<div class="form-group">
+									<label for="content">File contents</label>
+									<textarea class="form-control" name="content" id="content" rows="6"></textarea>
+							</div>
+							<button type="submit" class="btn btn-primary">Create file</button>
+					</form>
 			</div>
 	</div>
 </div>

@@ -274,31 +274,7 @@ app.get('/env-variables', function(request, response) {
   AWS CONTROLLER FOR KUBERNETES
 */
 
-//To get the selected file from the S3 bucket and render to the browser
-app.get('/getFile', function(request, response) {
-  if (cloud !== "AWS") {
-    response.render('error', {'msg': 'Wrong cloud platform. In order to use the ACK this must be run on AWS.'});
-  } else {
-    //Create S3 service object
-    s3 = new AWS.S3({apiVersion: '2006-03-01'});
-
-    var bucketParams = {
-      Bucket : ns + "-bucket",  //the bucket name will be "<namespace>-bucket"
-      Key: request.query.filename
-    };
-
-    s3.getObject(bucketParams, function(err, data){
-      if (err) {
-        response.render('error', {'msg': err});
-      } else {
-        response.type(data.ContentType); // Set FileType
-        response.send(data.Body);        // Send File Buffer
-      }
-    });
-  }
-});
-
-//returns the objects in the bucket
+//returns the object keys (names) that are in the bucket
 app.get('/ack', function(request, response) {
   if (cloud !== "AWS") {
     response.render('error', {'msg': 'Wrong cloud platform. In order to use the ACK this must be run on AWS.'});
@@ -313,11 +289,67 @@ app.get('/ack', function(request, response) {
 
     s3.listObjects(bucketParams, function(err, data){
       if (err) {
-        response.render('error', {'msg': err});
+        response.render('error', {'msg': JSON.stringify(err, null, 4)});
       } else {
         response.render('ack', {'s3Objects': data.Contents, 'bucketname': data.Name});
       }
     });
+  }
+});
+
+//Get the selected file from the S3 bucket and render to the browser
+app.get('/getFile', function(request, response) {
+  if (cloud !== "AWS") {
+    response.render('error', {'msg': 'Wrong cloud platform. In order to use the ACK this must be run on AWS.'});
+  } else {
+
+    let filename = request.query.filename;
+
+    //Create S3 service object
+    s3 = new AWS.S3({apiVersion: '2006-03-01'});
+
+    var bucketParams = {
+      Bucket : ns + "-bucket",  //the bucket name will be "<namespace>-bucket"
+      Key: filename
+    };
+
+    s3.getObject(bucketParams, function(err, data){
+      if (err) {
+        response.render('error', {'msg': JSON.stringify(err, null, 4)});
+      } else {
+        // response.type(data.ContentType); // Set FileType
+        // response.send(data.Body);        // Send File Buffer
+        response.render('s3viewfile', {'filename': filename, 'file': data.Body});
+      }
+    });
+  }
+});
+
+//Uploading a file to s3
+app.post('/s3upload', function(request, response) {
+  if (cloud !== "AWS") {
+    response.render('error', {'msg': 'Wrong cloud platform. In order to use the ACK this must be run on AWS.'});
+  } else {
+    let filename = request.body.filename;
+    let content = request.body.content;
+
+    // Create S3 service object
+    s3 = new AWS.S3({apiVersion: '2006-03-01'});
+
+    var bucketParams = {
+      Bucket : ns + "-bucket",  //the bucket name will be "<namespace>-bucket"
+      Body: content,
+      Key: filename,
+      ContentType: 'text/plain'
+    };
+
+    s3.putObject(bucketParams, function(err, data) {
+       if (err) {
+         response.render('error', {'msg': JSON.stringify(err, null, 4)});
+       } else {
+         response.redirect('/ack');
+       }
+     });
   }
 });
 

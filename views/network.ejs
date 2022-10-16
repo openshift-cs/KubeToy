@@ -7,17 +7,16 @@
 		<span class="pficon pficon-network small"></span>
 		Networking
 	</h1>
-
 	<div class="row">
 		<p class="col-lg-6 mb-5">
 			OpenShift pods can send data back and forth without relying on any external network
 			connections. Typically, pod communication should happen through an OpenShift Service.
-			Services allow for load balancing connections to multiple backing pods,
+			<a href="https://docs.openshift.com/container-platform/latest/architecture/understanding-development.html#understanding-kubernetes-pods" target="_blank"> Services
+			<span class="fa fa-external-link-alt small"></span></a> allow for load balancing connections to multiple backing pods,
 			while also providing a persistent and consistent endpoint, whereas pod endpoint IPs
 			are ephemeral.
 		</p>
 	</div>
-
 	<div class="row row-cards-pf">
 		<div class="col-lg-6 microservice hide">
 			<div class="card-pf card-pf-view">
@@ -31,7 +30,7 @@
 							<p>
 								This list of <em>Remote Pods</em> increases or decreases dynamically based on the number
 								of microservice pods running. You can
-								<a href="https://docs.openshift.com/container-platform/4.11/cli_reference/openshift_cli/developer-cli-commands.html#oc-scale" target="_blank">
+								<a href="https://docs.openshift.com/container-platform/latest/cli_reference/openshift_cli/developer-cli-commands.html#oc-scale" target="_blank">
 									manually scale <span class="fa fa-external-link-alt small"></span>
 								</a> the number of pods in the deployment from the CLI or within the web console.
 							</p>
@@ -46,7 +45,6 @@
 				</div>
 			</div>
 		</div>
-
 		<div class="col-lg-6">
 			<div class="card-pf card-pf-view">
 				<div class="card-pf-body">
