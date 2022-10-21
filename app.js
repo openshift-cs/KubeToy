@@ -265,9 +265,9 @@ if (hasConfigMap) {
  */
 app.get('/env-variables', function(request, response) {
   //redact AWS IAM ARN account numbers and role name
-  //let envdata = JSON.stringify(process.env,null,4);
-  //let envvar = envdata.replace(/\d{9}:role\/.*/,'*********:role/<redacted>\"\,');
-  let envvar = JSON.stringify(process.env,null,4).replace(/\d{9}:role\/.*/,'*********:role/<redacted>\"\,');
+  let envdata = JSON.stringify(process.env,null,4);
+  let envvar = envdata.replace(/\d{9}:role\/.*/,'*********:role/<redacted>\"\,');
+
   response.render('env-variables', {'envVariables': envvar});
 });
 
