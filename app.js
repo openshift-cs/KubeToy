@@ -11,7 +11,6 @@ const dns = require('dns');
 const AWS = require('aws-sdk');
 const appVersion = '1.5.0';
 
-
 /*
   CONFIGURE APPLICATION
  */
@@ -24,9 +23,6 @@ app.use(bodyParser.urlencoded({
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 app.set('port', process.env.PORT || 8080);
-
-// Set the region
-AWS.config.update({region: 'us-west-2'});  //TODO change to envvar
 
 
 /*
@@ -52,18 +48,17 @@ if (!path.isAbsolute(directory)) { directory = path.resolve(__dirname, directory
 // Pod name
 let pod = process.env.HOSTNAME || 'Unknown pod';
 
-//Cloud - which cloud
-let cloud = process.env.CLOUD;
-
 //Namespace
 let ns = process.env.NAMESPACE;
+
+//Cloud app is on
+let cloud = process.env.CLOUD.toUpperCase(); //added for using envvar
 
 // Booleans
 let healthy = true;
 let hasFilesystem = fs.existsSync(directory);
 let hasSecret = fs.existsSync(secretFile);
 let hasConfigMap = fs.existsSync(configFile);
-
 
 /*
   SETUP COMMON, SHARED VARIABLES
@@ -74,7 +69,6 @@ app.locals.hasFilesystem = hasFilesystem;
 app.locals.hasSecret = hasSecret;
 app.locals.hasConfigMap = hasConfigMap;
 app.locals.cloud = cloud;
-
 
 /*
   DEBUGGING URLS
@@ -89,7 +83,6 @@ app.get('/error', function(request, response) {
   response.render('error');
 });
 
-
 /*
   HOME URLS/FUNCTIONS
  */
@@ -103,6 +96,10 @@ app.get('/home', function(request, response) {
   response.render('home', {'healthStatus': status});
 });
 
+
+/*
+  OTHER URLS/FUNCTIONS
+ */
 app.get('/health', function(request, response) {
   if( healthy ) {
     response.status(200);
@@ -267,11 +264,31 @@ if (hasConfigMap) {
   ENVIRONMENT VARIABLES URLS/FUNCTIONS
  */
 app.get('/env-variables', function(request, response) {
-  response.render('env-variables', {'envVariables': JSON.stringify(process.env,null,4)});
+  let envvar = JSON.stringify(process.env,null,4).replace(/\d{9}:/g,'*********:'); //obfuscate AWS account numbers
+  response.render('env-variables', {'envVariables': envvar});
 });
 
 /*
   AWS CONTROLLER FOR KUBERNETES
+
+  There are 3 capabilities below:
+  1. Show the contents of the bucket (which is of a predetermined syntax of "<namespace>-bucket")
+  2. Get the contents of a specific object (file) in the bucket
+  3. Create a new object(file) in the bucket
+
+  For Authentication (taken from: https://aws-controllers-k8s.github.io/community/docs/user-docs/authentication/#background)
+  ------------
+  When initiating communication with an AWS service API, the ACK controller creates a new aws-sdk-go Session object. This Session
+  object is automatically configured during construction by code in the aws-sdk-go library that looks for credential information
+  in the following places, in this specific order:
+
+  1. If the AWS_PROFILE environment variable is set, find that specified profile in the configured credentials file and use that profile’s credentials.
+  2. If the AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY environment variables are both set, these values are used by aws-sdk-go to set the AWS credentials.
+  3. If the AWS_WEB_IDENTITY_TOKEN_FILE environment variable is set, `aws-sdk-go` will load the credentials from the JSON web token (JWT) present in the file
+    pointed to by this environment variable. Note that this environment variable is set to the value `/var/run/secrets/eks.amazonaws.com/serviceaccount/token`
+    by the IAM Roles for Service Accounts (IRSA) pod identity webhook and the contents of this file are automatically rotated by the webhook with temporary credentials.
+  4. If there is a credentials file present at the location specified in the AWS_SHARED_CREDENTIALS_FILE environment variable (or $HOME/.aws/credentials if empty),
+    `aws-sdk-go` will load the “default” profile present in the credentials file.
 */
 
 //returns the object keys (names) that are in the bucket
@@ -289,6 +306,7 @@ app.get('/ack', function(request, response) {
 
     s3.listObjects(bucketParams, function(err, data){
       if (err) {
+        console.error(err);
         response.render('error', {'msg': JSON.stringify(err, null, 4)});
       } else {
         response.render('ack', {'s3Objects': data.Contents, 'bucketname': data.Name});
@@ -297,7 +315,7 @@ app.get('/ack', function(request, response) {
   }
 });
 
-//Get the selected file from the S3 bucket and render to the browser
+//Get the selected object from the S3 bucket and render to the browser
 app.get('/getFile', function(request, response) {
   if (cloud !== "AWS") {
     response.render('error', {'msg': 'Wrong cloud platform. In order to use the ACK this must be run on AWS.'});
@@ -315,17 +333,16 @@ app.get('/getFile', function(request, response) {
 
     s3.getObject(bucketParams, function(err, data){
       if (err) {
+        console.error(err);
         response.render('error', {'msg': JSON.stringify(err, null, 4)});
       } else {
-        // response.type(data.ContentType); // Set FileType
-        // response.send(data.Body);        // Send File Buffer
-        response.render('s3viewfile', {'filename': filename, 'file': data.Body});
+        response.render('s3viewfile', {'filename': filename, 'content': data.Body});
       }
     });
   }
 });
 
-//Uploading a file to s3
+//create an object in the s3 bucket
 app.post('/s3upload', function(request, response) {
   if (cloud !== "AWS") {
     response.render('error', {'msg': 'Wrong cloud platform. In order to use the ACK this must be run on AWS.'});
@@ -345,6 +362,7 @@ app.post('/s3upload', function(request, response) {
 
     s3.putObject(bucketParams, function(err, data) {
        if (err) {
+         console.error(err);
          response.render('error', {'msg': JSON.stringify(err, null, 4)});
        } else {
          response.redirect('/ack');
@@ -435,7 +453,6 @@ function processDNS(hostname, response) {
       for (let i = 0; i < addresses.length; i++) {
         addrList += addresses[i] + '\n';
       }
-
       response.render('network', {'dnsResponse': addrList, 'dnsHost': hostname});
     }
   });

@@ -45,3 +45,4 @@ typings/
 .idea/
 Dockerfile
 .dockerignore
+*.bu*
