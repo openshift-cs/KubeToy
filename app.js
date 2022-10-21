@@ -264,7 +264,9 @@ if (hasConfigMap) {
   ENVIRONMENT VARIABLES URLS/FUNCTIONS
  */
 app.get('/env-variables', function(request, response) {
-  let envvar = JSON.stringify(process.env,null,4).replace(/\d{9}:/g,'*********:'); //obfuscate AWS account numbers
+  //redact AWS IAM ARN account numbers and role name
+  let envvar = JSON.stringify(process.env,null,4).replace(/\d{9}:role\/.*/,'*********:role/<redacted>\"\,');
+
   response.render('env-variables', {'envVariables': envvar});
 });
 
