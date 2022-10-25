@@ -71,7 +71,7 @@
                 <span class="fa fa-cubes" data-toggle="tooltip" title="Pod Auto Scaling"></span>
                 <span class="list-group-item-value">Pod Auto Scaling</span>
             </a>
-        <% if (locals.cloud === "AWS") { %>
+        <% if (locals.isAWS) { %>
         <li class="list-group-item<% if (locals.page !== undefined && page == 'ack') { %> active<% } %>">
             <a href="/ack">
                 <span class="fa fa-server" data-toggle="tooltip" title="AWS Controller Kubernetes"></span>

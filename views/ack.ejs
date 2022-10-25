@@ -46,7 +46,7 @@
 				<h4>Upload a text file to S3</h4>
 				<p>In this section you can create a file to upload to your S3 bucket directly from this application. Enter a file name and some text in the contents box and then click
 					"Create file".</p>
-					<form method="POST" action="/s3upload">
+					<form name="create-s3-object" onsubmit="return validateForm()" method="POST" action="/s3upload">
 							<div class="form-group">
 									<label for="filename">Filename</label>
 									<input type="text" class="form-control" name="filename" id="filename" aria-describedby="filenameHelp" placeholder="Filename">
@@ -62,4 +62,24 @@
 	</div>
 </div>
 
-<%- include('templates/footer.ejs'); %>
+<%- include('templates/footer.ejs', {excludeClosingTags: true}); %>
+
+<script type="text/javascript">
+
+function validateForm() {
+  var name = document.forms["create-s3-object"]["filename"].value;
+	var content = document.forms["create-s3-object"]["content"].value;
+  if (name == "") {
+    alert("Filename must be filled out.");
+    return false;
+  }
+	if (content == "") {
+    alert("Please enter some file content.");
+    return false;
+  }
+}
+
+</script>
+
+</body>
+</html>

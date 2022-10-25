@@ -52,13 +52,15 @@ let pod = process.env.HOSTNAME || 'Unknown pod';
 let ns = process.env.NAMESPACE;
 
 //Cloud app is on
-let cloud = process.env.CLOUD.toUpperCase(); //added for using envvar
+//let cloud = (process.env.CLOUD || 'unknown').toUpperCase(); //added for using envvar
 
 // Booleans
 let healthy = true;
 let hasFilesystem = fs.existsSync(directory);
 let hasSecret = fs.existsSync(secretFile);
 let hasConfigMap = fs.existsSync(configFile);
+let isAwsSet = false; //has the app checked whether it is running on AWS by setting app.locals.isAWS
+
 
 /*
   SETUP COMMON, SHARED VARIABLES
@@ -68,7 +70,8 @@ app.locals.appVersion = appVersion;
 app.locals.hasFilesystem = hasFilesystem;
 app.locals.hasSecret = hasSecret;
 app.locals.hasConfigMap = hasConfigMap;
-app.locals.cloud = cloud;
+//app.locals.cloud = cloud;
+app.locals.isAWS = false; //use this for automated checking
 
 /*
   DEBUGGING URLS
@@ -93,7 +96,37 @@ app.get('/', function(request, response) {
 
 app.get('/home', function(request, response) {
   let status = healthStatus();
-  response.render('home', {'healthStatus': status});
+
+  //the first time the app is run this will be set to false thus requiring a check
+  //of if the app can access the S3 bucket
+  if (!isAwsSet){
+    // Create S3 service object
+    s3 = new AWS.S3({apiVersion: '2006-03-01'});
+
+      var bucketParams = {
+        Bucket : ns + "-bucket",  //the bucket name will be "<namespace>-bucket"
+      };
+
+      s3.headBucket(bucketParams, function(err,data){
+        if (err) { //there was some error in accessing the bucket, or it does not exist -> don't show ACK menu item
+          let msg = "If this is not running on AWS and/or you have no intention of using the ACK please ignore. \n" +
+                       " - Error in accessing the " + ns + "-bucket, or it does not exist. \n" +
+                       " - ACK feature disabled";
+          console.log(msg);
+          isAwsSet = true;
+          app.locals.isAWS = false;
+          response.render('home', {'healthStatus': status});
+        }
+        else { //show the ack feature
+          console.log("Bucket accessible, enabling ACK feature.");
+          isAwsSet = true;
+          app.locals.isAWS = true;
+          response.render('home', {'healthStatus': status});
+        }
+      });
+  } else { //meaning AWS was checked for already so don't need to check again
+    response.render('home', {'healthStatus': status});
+  }
 });
 
 
@@ -296,9 +329,11 @@ app.get('/env-variables', function(request, response) {
 
 //returns the object keys (names) that are in the bucket
 app.get('/ack', function(request, response) {
-  if (cloud !== "AWS") {
-    response.render('error', {'msg': 'Wrong cloud platform. In order to use the ACK this must be run on AWS.'});
-  } else {
+    if (!app.locals.isAWS) {
+      console.error("ACK can only be accessed on AWS.");
+      response.render('error', {'msg': 'In order to use the ACK this must be run on AWS.'});
+    }
+    else {
     // Create S3 service object
     s3 = new AWS.S3({apiVersion: '2006-03-01'});
 
@@ -309,8 +344,8 @@ app.get('/ack', function(request, response) {
 
     s3.listObjects(bucketParams, function(err, data){
       if (err) {
-        console.error(err);
-        response.render('error', {'msg': JSON.stringify(err, null, 4)});
+        console.error(err + "\nAttepting access to bucket: " + ns + "-bucket");
+        response.render('error', {'msg': JSON.stringify(err, null, 4) + "\nAttepting access to bucket: " + ns + "-bucket"});
       } else {
         response.render('ack', {'s3Objects': data.Contents, 'bucketname': data.Name});
       }
@@ -320,8 +355,9 @@ app.get('/ack', function(request, response) {
 
 //Get the selected object from the S3 bucket and render to the browser
 app.get('/getFile', function(request, response) {
-  if (cloud !== "AWS") {
-    response.render('error', {'msg': 'Wrong cloud platform. In order to use the ACK this must be run on AWS.'});
+  if (!app.locals.isAWS) {
+    console.error("ACK can only be accessed on AWS.");
+    response.render('error', {'msg': 'In order to use the ACK this must be run on AWS.'});
   } else {
 
     let filename = request.query.filename;
@@ -347,7 +383,8 @@ app.get('/getFile', function(request, response) {
 
 //create an object in the s3 bucket
 app.post('/s3upload', function(request, response) {
-  if (cloud !== "AWS") {
+  if (!app.locals.isAWS) {
+    console.error("ACK can only be accessed on AWS.");
     response.render('error', {'msg': 'Wrong cloud platform. In order to use the ACK this must be run on AWS.'});
   } else {
     let filename = request.body.filename;
@@ -460,7 +497,6 @@ function processDNS(hostname, response) {
     }
   });
 }
-
 
 /*
   ABOUT URLS/FUNCTIONS
