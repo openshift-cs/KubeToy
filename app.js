@@ -51,15 +51,11 @@ let pod = process.env.HOSTNAME || 'Unknown pod';
 //Namespace
 let ns = process.env.NAMESPACE;
 
-//Cloud app is on
-//let cloud = (process.env.CLOUD || 'unknown').toUpperCase(); //added for using envvar
-
 // Booleans
 let healthy = true;
 let hasFilesystem = fs.existsSync(directory);
 let hasSecret = fs.existsSync(secretFile);
 let hasConfigMap = fs.existsSync(configFile);
-let isAwsSet = false; //has the app checked whether it is running on AWS by setting app.locals.isAWS
 
 
 /*
@@ -70,8 +66,7 @@ app.locals.appVersion = appVersion;
 app.locals.hasFilesystem = hasFilesystem;
 app.locals.hasSecret = hasSecret;
 app.locals.hasConfigMap = hasConfigMap;
-//app.locals.cloud = cloud;
-app.locals.isAWS = false; //use this for automated checking
+app.locals.isAWS = undefined; //use this for automated checking
 
 /*
   DEBUGGING URLS
@@ -96,37 +91,7 @@ app.get('/', function(request, response) {
 
 app.get('/home', function(request, response) {
   let status = healthStatus();
-
-  //the first time the app is run this will be set to false thus requiring a check
-  //of if the app can access the S3 bucket
-  if (!isAwsSet){
-    // Create S3 service object
-    s3 = new AWS.S3({apiVersion: '2006-03-01'});
-
-      var bucketParams = {
-        Bucket : ns + "-bucket",  //the bucket name will be "<namespace>-bucket"
-      };
-
-      s3.headBucket(bucketParams, function(err,data){
-        if (err) { //there was some error in accessing the bucket, or it does not exist -> don't show ACK menu item
-          let msg = "If this is not running on AWS and/or you have no intention of using the ACK please ignore. \n" +
-                       " - Error in accessing the " + ns + "-bucket, or it does not exist. \n" +
-                       " - ACK feature disabled";
-          console.log(msg);
-          isAwsSet = true;
-          app.locals.isAWS = false;
-          response.render('home', {'healthStatus': status});
-        }
-        else { //show the ack feature
-          console.log("Bucket accessible, enabling ACK feature.");
-          isAwsSet = true;
-          app.locals.isAWS = true;
-          response.render('home', {'healthStatus': status});
-        }
-      });
-  } else { //meaning AWS was checked for already so don't need to check again
-    response.render('home', {'healthStatus': status});
-  }
+  response.render('home', {'healthStatus': status});
 });
 
 
@@ -329,11 +294,10 @@ app.get('/env-variables', function(request, response) {
 
 //returns the object keys (names) that are in the bucket
 app.get('/ack', function(request, response) {
-    if (!app.locals.isAWS) {
-      console.error("ACK can only be accessed on AWS.");
-      response.render('error', {'msg': 'In order to use the ACK this must be run on AWS.'});
-    }
-    else {
+  if (!app.locals.isAWS) {
+    console.error("ACK can only be accessed on AWS.");
+    response.render('error', {'msg': 'In order to use the ACK this must be run on AWS.'});
+  } else {
     // Create S3 service object
     s3 = new AWS.S3({apiVersion: '2006-03-01'});
 
@@ -401,13 +365,13 @@ app.post('/s3upload', function(request, response) {
     };
 
     s3.putObject(bucketParams, function(err, data) {
-       if (err) {
-         console.error(err);
-         response.render('error', {'msg': JSON.stringify(err, null, 4)});
-       } else {
-         response.redirect('/ack');
-       }
-     });
+      if (err) {
+        console.error(err);
+        response.render('error', {'msg': JSON.stringify(err, null, 4)});
+      } else {
+        response.redirect('/ack');
+      }
+    });
   }
 });
 
@@ -420,13 +384,13 @@ app.get('/autoscaling', function(request, response) {
 });
 
 app.get('/hpa', function(request, response) {
-    let options = {
-        host: serviceIP,
-        port: servicePort,
-        path: '/hpa',
-        method: 'GET'
-      },
-      errMessage = 'microservice endpoint not available';
+  let options = {
+      host: serviceIP,
+      port: servicePort,
+      path: '/hpa',
+      method: 'GET'
+    },
+    errMessage = 'microservice endpoint not available';
 
   http.request(options, function(httpResponse) {
       return;
@@ -510,6 +474,30 @@ app.get('/about', function(request, response) {
   START SERVER
  */
 console.log(`Version: ${appVersion}` );
+
+//the first time the app is run this will be set to false thus requiring a check
+//of if the app can access the S3 bucket
+if (app.locals.isAWS === undefined){
+  // Create S3 service object
+  s3 = new AWS.S3({apiVersion: '2006-03-01'});
+
+  var bucketParams = {
+    Bucket : ns + "-bucket",  //the bucket name will be "<namespace>-bucket"
+  };
+
+  s3.headBucket(bucketParams, function(err,data){
+    if (err) { //there was some error in accessing the bucket, or it does not exist -> don't show ACK menu item
+      let msg = "If this is not running on AWS and/or you have no intention of using the ACK please ignore. \n" +
+                   " - Error in accessing the " + ns + "-bucket, or it does not exist. \n" +
+                   " - ACK feature disabled";
+      console.log(msg);
+      app.locals.isAWS = false;
+    } else { //show the ack feature
+      console.log("Bucket accessible, enabling ACK feature.");
+      app.locals.isAWS = true;
+    }
+  });
+}
 
 app.listen(app.get('port'), '0.0.0.0', function() {
   console.log(pod + ': server starting on port ' + app.get('port'));
