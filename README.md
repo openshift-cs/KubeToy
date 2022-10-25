@@ -34,7 +34,6 @@ the ConfigMap object
 the Secret object
 - **PERSISTENT_DIRECTORY** (*default: /var/demo\_files*): The fully-qualified path to the directory mounted
 with the PersistentVolume
-- **NAMESPACE**: Namespace that this application is deployed into. This is used for the S3 bucket and is automatically set.
 
 
 # Deployment
