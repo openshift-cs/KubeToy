@@ -1,4 +1,5 @@
 # OSToy
+
 ## v1.5.0
 
 A simple Node.js application that deploys to OpenShift. It is used to help
@@ -15,30 +16,29 @@ which you can:
 * increase the load to test out Horizontal Pod Autoscaler
 * if deployed to AWS, use the app to read the contents of an S3 bucket created with the AWS Controller for Kubernetes
 
+## Configuration
 
-# Configuration
-## Environment Variables
+### Environment Variables
 
-- **PORT** (*default: 8080*): The port to expose the application on
-- **MICROSERVICE_NAME** (*default: none*): The upper-cased name of the Service object associated
+* **PORT** (*default: 8080*): The port to expose the application on
+* **MICROSERVICE_NAME** (*default: none*): The upper-cased name of the Service object associated
 with the microservice application (be sure to also replace any `-` with `_`)
-- **MICROSERVICE_IP** (*default: <MICROSERVICE_NAME>\_SERVICE\_HOST*): The static IP of the Service
+* **MICROSERVICE_IP** (*default: <MICROSERVICE_NAME>\_SERVICE\_HOST*): The static IP of the Service
 object associated with the microservice application. This will be looked up from automatic OpenShift
 environment variables if `MICROSERVICE_NAME` is provided
-- **MICROSERVICE_PORT** (*default: <MICROSERVICE_NAME>\_SERVICE\_PORT*): The exposed port of the Service
+* **MICROSERVICE_PORT** (*default: <MICROSERVICE_NAME>\_SERVICE\_PORT*): The exposed port of the Service
 object associated with the microservice application. This will be looked up from automatic OpenShift
 environment variables if `MICROSERVICE_NAME` is provided
-- **CONFIG_FILE** (*default: /var/config/config.json*): The fully-qualified path to the file created by
+* **CONFIG_FILE** (*default: /var/config/config.json*): The fully-qualified path to the file created by
 the ConfigMap object
-- **SECRET_FILE** (*default: /var/secret/secret.txt*): The fully-qualified path to the file created by
+* **SECRET_FILE** (*default: /var/secret/secret.txt*): The fully-qualified path to the file created by
 the Secret object
-- **PERSISTENT_DIRECTORY** (*default: /var/demo\_files*): The fully-qualified path to the directory mounted
+* **PERSISTENT_DIRECTORY** (*default: /var/demo\_files*): The fully-qualified path to the directory mounted
 with the PersistentVolume
 
+## Deployment
 
-# Deployment
-
-## Using `oc` commands
+### Using `oc` commands and `new-app`
 
 ```bash
 # Add Secret to OpenShift
@@ -147,8 +147,27 @@ route "ostoy" created
 $ python -m webbrowser "$(oc get route ostoy -o template --template='https://{{.spec.host}}')"
 ```
 
+### Using `oc` commands and kubernetes files
 
-### Changes from KubeToy
+```bash
+# Create the project on OpenShift
+oc new-project ostoy
+
+# Deploy all the microservices artficts from backend service (deployment and service)
+
+$ oc create -f ./deployment/yaml/deplyment-microservice.yaml
+
+
+# Deploy all the front-end artficts 
+# (Persistent Volume Claim, Deployment Object, Service, Route ConfigMaps, Secrets)
+
+$ oc create -f ./deployment/yaml/deplyment-fe.yaml
+
+# Get the route to the application and open it on web browser
+$ oc get route ostoy -o template --template='https://{{.spec.host}}'
+```
+
+## Changes from KubeToy
 
 * Remove IBM CoS integration
 * Remove references to IBM Private Cloud
