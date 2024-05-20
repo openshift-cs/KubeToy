@@ -1,6 +1,6 @@
 {
 	"name": "ostoy",
-	"version": "1.6.0",
+	"version": "1.7.0",
 	"description": "",
 	"keywords": [],
 	"homepage": "https://github.com/openshift-cs/ostoy",
@@ -22,8 +22,8 @@
 		"@azure/storage-blob": "^12.14.0",
 		"aws-sdk": "^2.1320.0",
 		"body-parser": "^1.20.2",
-		"ejs": "^3.1.9",
-		"express": "^4.18.2",
+		"ejs": "^3.1.10",
+		"express": "^4.19.2",
 		"valid-filename": "^3.1.0"
 	},
 	"private": true
