@@ -1,5 +1,5 @@
 # OSToy
-## v1.6.0
+## v1.7.0
 
 A simple Node.js application that deploys to OpenShift. It is used to help
 explore the functionality of Kubernetes. This toy application has a user interface
@@ -48,14 +48,14 @@ with the PersistentVolume
 # OpenShift environment. Files can even be renamed in the Secret
 $ oc create -f https://raw.githubusercontent.com/openshift-cs/ostoy/master/deployment/yaml/secret.yaml
 
-secret "ostoy-secret" created
+secret/ostoy-secret created
 
 # Add ConfigMap to OpenShift
 # The example emulates an HAProxy config file, and is typically used for overriding
 # default configurations in an OpenShift application. Files can even be renamed in the ConfigMap
 $ oc create -f https://raw.githubusercontent.com/openshift-cs/ostoy/master/deployment/yaml/configmap.yaml
 
-configmap "ostoy-config" created
+configmap/ostoy-config created
 
 # Deploy microservice
 # We deploy the microservice first to ensure that the SERVICE environment variables
@@ -69,9 +69,9 @@ $ oc new-app https://github.com/openshift-cs/ostoy \
     --labels=app=ostoy
 
 Creating resources with label app=ostoy ...
-  imagestream "ostoy-microservice" created
-  buildconfig "ostoy-microservice" created
-  deploymentconfig "ostoy-microservice" created
+  imagestream.image.openshift.io "ostoy-microservice" created
+  buildconfig.build.openshift.io "ostoy-microservice" created
+  deployment.apps "ostoy-microservice" created
   service "ostoy-microservice" created
 Success
   Build scheduled, use 'oc logs -f bc/ostoy-microservice' to track its progress.
@@ -87,9 +87,9 @@ $ oc new-app https://github.com/openshift-cs/ostoy \
     --env=MICROSERVICE_NAME=OSTOY_MICROSERVICE
 
 Creating resources ...
-  imagestream "ostoy" created
-  buildconfig "ostoy" created
-  deploymentconfig "ostoy" created
+  imagestream.image.openshift.io "ostoy" created
+  buildconfig.build.openshift.io "ostoy" created
+  deployment.apps "ostoy" created
   service "ostoy" created
 Success
   Build scheduled, use 'oc logs -f bc/ostoy' to track its progress.
@@ -99,51 +99,51 @@ Success
 
 # Update Deployment to use a "Recreate" deployment strategy for consistent deployments
 # with persistent volumes
-$ oc patch dc/ostoy -p '{"spec": {"strategy": {"type": "Recreate"}}}'
+$ oc patch deployment ostoy --type=json -p \
+    '[{"op": "replace", "path": "/spec/strategy/type", "value": "Recreate"}, {"op": "remove", "path": "/spec/strategy/rollingUpdate"}]'
 
-deploymentconfig "ostoy" patched
+deployment.apps/ostoy patched
 
 # Set a Liveness probe on the Deployment to ensure the pod is restarted if something
 # isn't healthy within the application
-$ oc set probe dc/ostoy --liveness --get-url=http://:8080/health
+$ oc set probe deployment ostoy --liveness --get-url=http://:8080/health
 
-deploymentconfig "ostoy" updated
+deployment.apps/ostoy probes updated
 
 # Attach Secret, ConfigMap, and PersistentVolume to deployment
 # We are using the default paths defined in the application, but these paths
 # can be overriden in the application via environment variables
 # Attach Secret
-$ oc set volume deploymentconfig ostoy --add \
+$ oc set volume deployment ostoy --add \
     --secret-name=ostoy-secret \
     --mount-path=/var/secret
 
-info: Generated volume name: volume-6fqmv
-deploymentconfig "ostoy" updated
+info: Generated volume name: volume-jtn5v
+deployment.apps/ostoy volume updated
 
 # Attach ConfigMap (using shorthand commands)
-$ oc set volume dc ostoy --add \
+$ oc set volume deployment ostoy --add \
     --configmap-name=ostoy-config \
     -m /var/config
 
 info: Generated volume name: volume-2ct8f
-deploymentconfig "ostoy" updated
+deployment.apps/ostoy updated
 
 # Create and attach PersistentVolume
-$ oc set volume dc ostoy --add \
+$ oc set volume deployment ostoy --add \
     --type=pvc \
     --claim-size=1G \
     -m /var/demo_files
 
 info: Generated volume name: volume-rlbvv
-persistentvolumeclaims/pvc-gbpx7
-deploymentconfig "ostoy" updated
+deployment.apps/ostoy updated
 
 # Finally expose the UI application as an OpenShift Route
 # Using OpenShift Dedicated's included TLS wildcard certicates, we can easily
 # deploy this as an HTTPS application
 $ oc create route edge --service=ostoy --insecure-policy=Redirect
 
-route "ostoy" created
+route.route.openshift.io/ostoy created
 
 # Browse to your application!
 $ python -m webbrowser "$(oc get route ostoy -o template --template='https://{{.spec.host}}')"

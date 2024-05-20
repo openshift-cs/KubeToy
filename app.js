@@ -10,7 +10,7 @@ const http = require('http');
 const dns = require('dns');
 const AWS = require('aws-sdk');
 const { BlobServiceClient } = require("@azure/storage-blob");
-const appVersion = '1.6.0';
+const appVersion = '1.7.0';
 
 /*
   CONFIGURE APPLICATION
